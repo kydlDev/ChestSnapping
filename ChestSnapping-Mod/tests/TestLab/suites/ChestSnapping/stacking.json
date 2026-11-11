@@ -1,0 +1,29 @@
+{
+  "name": "stacking",
+  "description": "A chest aimed at a chest counts as a support (so it can be placed on top without planks); aimed at anything else, or with [Stacking] Enable / EnableAll off, vanilla decides. A chest never stays a support afterwards.",
+  "timeout": 90,
+  "steps": [
+    { "do": "hook", "name": "chestsnapping.arena", "contains": "arena at", "label": "start on the arena spot" },
+    { "do": "hook", "name": "chestsnapping.featureRunning", "args": { "id": "stacking" }, "expect": true, "label": "stacking running at start" },
+    { "do": "hook", "name": "chestsnapping.supports", "args": { "prefab": "piece_chest_wood" }, "expect": false, "label": "a chest is no support in vanilla" },
+    { "do": "hook", "name": "chestsnapping.stackDecision", "args": { "ghost": "piece_chest_wood", "hit": "piece_chest_wood" }, "expect": "override", "label": "wood chest on wood chest" },
+    { "do": "hook", "name": "chestsnapping.stackDecision", "args": { "ghost": "piece_chest", "hit": "piece_chest_private" }, "expect": "override", "label": "different chest types" },
+    { "do": "hook", "name": "chestsnapping.stackDecision", "args": { "ghost": "piece_chest_wood", "hit": "wood_floor" }, "expect": "none", "label": "chest on a plank floor: vanilla already allows it" },
+    { "do": "hook", "name": "chestsnapping.stackDecision", "args": { "ghost": "wood_floor", "hit": "piece_chest_wood" }, "expect": "none", "label": "a floor on a chest stays refused" },
+    { "do": "hook", "name": "chestsnapping.supports", "args": { "prefab": "piece_chest_wood" }, "expect": false, "label": "still no support after the decisions" },
+    { "do": "setConfig", "values": { "Stacking/Enable": false } },
+    { "do": "wait", "until": { "check": "hook", "name": "chestsnapping.featureRunning", "args": { "id": "stacking" }, "expect": false }, "timeout": 5 },
+    { "do": "hook", "name": "chestsnapping.stackDecision", "args": { "ghost": "piece_chest_wood", "hit": "piece_chest_wood" }, "expect": "none", "label": "off: vanilla" },
+    { "do": "hook", "name": "chestsnapping.featureRunning", "args": { "id": "snapping" }, "expect": true, "label": "snapping unaffected by Stacking/Enable" },
+    { "do": "setConfig", "values": { "Stacking/Enable": true } },
+    { "do": "wait", "until": { "check": "hook", "name": "chestsnapping.featureRunning", "args": { "id": "stacking" }, "expect": true }, "timeout": 5 },
+    { "do": "setConfig", "values": { "General/EnableAll": false } },
+    { "do": "wait", "until": { "check": "hook", "name": "chestsnapping.featureRunning", "args": { "id": "stacking" }, "expect": false }, "timeout": 5 },
+    { "do": "hook", "name": "chestsnapping.stackDecision", "args": { "ghost": "piece_chest_wood", "hit": "piece_chest_wood" }, "expect": "none", "label": "EnableAll off: vanilla" },
+    { "do": "setConfig", "values": { "General/EnableAll": true } },
+    { "do": "wait", "until": { "check": "hook", "name": "chestsnapping.stackDecision", "args": { "ghost": "piece_chest_wood", "hit": "piece_chest_wood" }, "expect": "override" }, "timeout": 5 }
+  ],
+  "asserts": [
+    { "check": "noErrors", "source": "ChestSnapping" }
+  ]
+}

@@ -80,7 +80,7 @@ public class SettingsTests
     {
         var src = File.ReadAllText(Path.Combine(TestPaths.Src, "Configuration", "ModSettings.cs"));
 
-        foreach (var section in new[] { "Prefabs", "Offsets" })
+        foreach (var section in new[] { "Prefabs", "Offsets", "Stacking" })
             Assert.That(Regex.IsMatch(src, @"Bind\(\s*""" + section + @"""\s*,\s*""Enable""\s*,\s*true"), Is.True, "[" + section + "] Enable (on by default) is the switch of that functionality");
     }
 

@@ -1,0 +1,23 @@
+{
+  "name": "api-register",
+  "description": "Another mod registers a chest prefab through ChestSnappingApi: it is a known chest (snap points + stacking), the user's ExcludedPrefabs still wins, unregistering takes it out again",
+  "timeout": 60,
+  "steps": [
+    { "do": "hook", "name": "chestsnapping.arena", "contains": "arena at", "label": "start on the arena spot" },
+    { "do": "hook", "name": "chestsnapping.source", "args": { "prefab": "wood_floor" }, "expect": "none", "label": "a floor is no chest" },
+    { "do": "hook", "name": "chestsnapping.ghostPoints", "args": { "prefab": "wood_floor" }, "expect": 0, "label": "no snap points on it" },
+    { "do": "hook", "name": "chestsnapping.apiRegister", "args": { "prefab": "wood_floor" }, "expect": true, "label": "RegisterChest accepted" },
+    { "do": "hook", "name": "chestsnapping.source", "args": { "prefab": "wood_floor" }, "expect": "api", "label": "known through the API" },
+    { "do": "hook", "name": "chestsnapping.ghostPoints", "args": { "prefab": "wood_floor" }, "expect": 14, "label": "snap points on it" },
+    { "do": "setConfig", "values": { "Prefabs/ExcludedPrefabs": "wood_floor" } },
+    { "do": "wait", "until": { "check": "hook", "name": "chestsnapping.source", "args": { "prefab": "wood_floor" }, "expect": "none" }, "timeout": 5 },
+    { "do": "setConfig", "values": { "Prefabs/ExcludedPrefabs": "" } },
+    { "do": "wait", "until": { "check": "hook", "name": "chestsnapping.source", "args": { "prefab": "wood_floor" }, "expect": "api" }, "timeout": 5 },
+    { "do": "hook", "name": "chestsnapping.apiUnregister", "args": { "prefab": "wood_floor" }, "expect": true, "label": "UnregisterChest accepted" },
+    { "do": "hook", "name": "chestsnapping.source", "args": { "prefab": "wood_floor" }, "expect": "none", "label": "out again" },
+    { "do": "hook", "name": "chestsnapping.apiRegister", "args": { "prefab": "" }, "expect": false, "label": "an empty name is refused" }
+  ],
+  "asserts": [
+    { "check": "noErrors", "source": "ChestSnapping" }
+  ]
+}

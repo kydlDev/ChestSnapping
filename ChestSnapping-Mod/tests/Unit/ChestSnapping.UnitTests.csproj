@@ -8,5 +8,6 @@
   <ItemGroup>
     <Compile Include="..\..\src\Core\Functions.cs" Link="Mod\Functions.cs" Condition="'$(KydlQuality)' != 'true'" />
     <Compile Include="..\..\src\Features\Snapping\Domain\PrefabNames.cs" Link="Mod\PrefabNames.cs" Condition="'$(KydlQuality)' != 'true'" />
+    <Compile Include="..\..\src\Features\Stacking\Domain\StackingRules.cs" Link="Mod\StackingRules.cs" Condition="'$(KydlQuality)' != 'true'" />
   </ItemGroup>
 </Project>

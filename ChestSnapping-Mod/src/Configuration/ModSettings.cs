@@ -21,6 +21,9 @@ internal static class ModSettings
     public static ConfigEntry<bool> OffsetsEnable;
     public static ConfigEntry<string> Adjustments;
 
+    // [Stacking]
+    public static ConfigEntry<bool> StackingEnable;
+
     // [DebugLog]
     public static ConfigEntry<bool> DebugLog;
 
@@ -32,6 +35,9 @@ internal static class ModSettings
 
     /// <summary>Are the saved point adjustments applied? EnableAll and [Offsets] Enable.</summary>
     public static bool OffsetsOn { get { return Functions.IsOn(On, OffsetsEnable == null || OffsetsEnable.Value); } }
+
+    /// <summary>Can a chest be placed on another chest without planks? EnableAll and [Stacking] Enable.</summary>
+    public static bool StackingOn { get { return Functions.IsOn(On, StackingEnable == null || StackingEnable.Value); } }
 
     /// <summary>Binds every entry. Called once, first thing after the log is ready.</summary>
     /// <param name="config">The plugin's config file.</param>
@@ -72,6 +78,11 @@ internal static class ModSettings
             "(0.05 = 10 cm bigger on that axis, negative = smaller). " +
             "pN adds an offset to a single point, N = 1-14 in Q/E cycling order. " +
             "Example: MyMod_Crate: shift=0,0.05,0 grow=-0.02,0,-0.02 p5=0,0.1,0");
+
+        StackingEnable = config.Bind("Stacking", "Enable", true,
+            "Lets you place a chest on top of (or next to) another chest without a plank or floor in between. " +
+            "Vanilla refuses it because chests do not count as a building support. Works for the chests of [Prefabs] (built-in, ExtraPrefabs, auto-detected). " +
+            "Off: vanilla behaviour.");
 
         DebugLog = config.Bind("DebugLog", "Enable", false,
             "Writes detailed lines to the BepInEx log (for bug reports). Leave off for normal play.");

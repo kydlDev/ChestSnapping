@@ -12,6 +12,8 @@
 | 14 snap points on the built-in chests (ghost) | - | - | snap-points | snap-feel | Automated + Manual |
 | ExcludedPrefabs live | - | - | excluded-prefab | - | Automated |
 | Saved shift moves the points; Offsets off ignores it | - | - | adjustment-applies | - | Automated |
+| Chest on chest without planks: decision rule, switches, a chest never stays a support | StackingRulesTests | - | stacking | stack-feel | Automated (decision) + Gap (real placement until stack-feel is done) |
+| Public API for other mods (RegisterChest / UnregisterChest) | - | - | api-register | - | Automated |
 | Config layout, patch target, suite rules | - | SettingsTests, PatchTargetsTests, SuiteRulesTests | - | - | Automated |
 | Q / E cycling, flush snapping to another chest | | | | snap-feel | Gap |
 | `grow` and single-point offsets, `chestsnap_info` output | | | | in-game | Gap |

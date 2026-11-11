@@ -69,7 +69,8 @@ public class Plugin : BaseUnityPlugin
     private void Update()
     {
         if (_cfgWatcher != null) _cfgWatcher.Tick();
-        if (!_refreshQueued) return;
+        bool apiChanged = ChestSnappingApi.TakeRefreshRequest();
+        if (!_refreshQueued && !apiChanged) return;
         _refreshQueued = false;
 
         if (_installer != null) _installer.Refresh();

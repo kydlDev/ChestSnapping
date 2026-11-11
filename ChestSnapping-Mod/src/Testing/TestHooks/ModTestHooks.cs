@@ -30,7 +30,7 @@ internal static class ModTestHooks
     [TestHook("chestsnapping.selftest")]
     private static string SelfTest() { return TestLabSupport.RunInGameTests(typeof(InGameTests)); }
 
-    /// <summary>"default", "extra", "auto" or "none": does this prefab get snap points under the current config?</summary>
+    /// <summary>"default", "extra", "api", "auto" or "none": does this prefab get snap points under the current config?</summary>
     [TestHook("chestsnapping.source")]
     private static string Source(string prefab) { return ChestSnapPoints.Source(Prefab(prefab)) ?? "none"; }
 
@@ -64,4 +64,34 @@ internal static class ModTestHooks
         Vector3[] applied = ChestSnapPoints.ComputePositions(bounds, SnapAdjustments.Active(prefab));
         return (float)Math.Round(applied[0].y - plain[0].y, 3);
     }
+
+    /// <summary>
+    /// "override" when StackingPatch would count the aimed-at piece as a support for a placement test of the ghost piece (chest on chest), else "none".
+    /// Uses the real prefabs and the real decision code; nothing is placed.
+    /// </summary>
+    [TestHook("chestsnapping.stackDecision")]
+    private static string StackDecision(string ghost, string hit)
+    {
+        WearNTear wear = StackingPatch.Decide(Prefab(ghost), Prefab(hit).GetComponent<Piece>());
+        string r = wear != null ? "override" : "none";
+        ModLog.Verbose("ModTestHooks: stackDecision " + ghost + " on " + hit + " -> " + r);
+        return r;
+    }
+
+    /// <summary>WearNTear.m_supports of the prefab (a chest must never stay a support after the patch ran).</summary>
+    [TestHook("chestsnapping.supports")]
+    private static bool Supports(string prefab)
+    {
+        WearNTear wear = Prefab(prefab).GetComponent<WearNTear>();
+        if (wear == null) throw new Exception("no WearNTear on " + prefab);
+        return wear.m_supports;
+    }
+
+    /// <summary>Calls the public API like another mod would: ChestSnappingApi.RegisterChest. Returns the API's answer.</summary>
+    [TestHook("chestsnapping.apiRegister")]
+    private static bool ApiRegister(string prefab) { return ChestSnappingApi.RegisterChest(prefab); }
+
+    /// <summary>Calls ChestSnappingApi.UnregisterChest.</summary>
+    [TestHook("chestsnapping.apiUnregister")]
+    private static bool ApiUnregister(string prefab) { return ChestSnappingApi.UnregisterChest(prefab); }
 }

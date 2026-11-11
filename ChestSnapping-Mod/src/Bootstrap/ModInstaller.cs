@@ -25,7 +25,7 @@ internal sealed class ModInstaller
         Current = this;
         bool page = HubTabs.RegisterModPage(_config);
         bool added = true;
-        foreach (IFeature feature in new IFeature[] { new SnappingFeature(), new AdjustmentsFeature() })
+        foreach (IFeature feature in new IFeature[] { new SnappingFeature(), new AdjustmentsFeature(), new StackingFeature() })
         {
             OperationResponse<int> add = Features.Add(feature);
             if (!add.IsSuccess)

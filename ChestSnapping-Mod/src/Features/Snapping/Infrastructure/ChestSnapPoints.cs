@@ -68,14 +68,25 @@ internal static class ChestSnapPoints
     /// <summary>"default", "extra", "auto" or null (= no snap points).</summary>
     internal static string Source(GameObject go)
     {
-        if (!ModSettings.PrefabsOn) return null;
+        return ModSettings.PrefabsOn ? Kind(go) : null;
+    }
 
+    /// <summary>Is this a chest the mod knows (built-in, extra list or auto-detected), whatever the feature switches say? Used by stacking.</summary>
+    internal static bool IsChest(GameObject go)
+    {
+        return Kind(go) != null;
+    }
+
+    /// <summary>"default", "extra", "api" (registered by another mod), "auto" or null, from the prefab lists only (no feature switch).</summary>
+    private static string Kind(GameObject go)
+    {
         string name = GetPrefabName(go);
 
         if (PrefabSets.Excluded.Contains(name)) return null;
 
         if (PrefabSets.ExtraSet.Contains(name)) return "extra";
         if (PrefabSets.Included.Contains(name)) return "default";
+        if (ChestSnappingApi.Contains(name)) return "api";
 
         if (ModSettings.AutoDetectContainers.Value && IsPlainContainer(go)) return "auto";
 

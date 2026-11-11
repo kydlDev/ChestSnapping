@@ -1,0 +1,16 @@
+{
+  "name": "stack-feel",
+  "description": "Placing a chest on top of a chest without any plank or floor: the ghost turns valid, the chest is placed, nothing collapses",
+  "manualOnly": true,
+  "timeout": 600,
+  "steps": [
+    { "do": "hook", "name": "chestsnapping.arena", "contains": "arena at", "label": "start on the arena spot" },
+    { "do": "checkpoint", "message": "Build a wood chest on open ground. Pick a second wood chest and aim at the TOP of the first one, no planks anywhere: is the ghost white/blue (valid) and not red?" },
+    { "do": "checkpoint", "message": "Press Q / E to select a Bottom point and aim near a Top corner of the lower chest. Does it lock on, sit flush, and can you place it?" },
+    { "do": "checkpoint", "message": "Place a third chest on top (a stack of 3). Open each chest and put an item in: does every chest open and keep its items? Remove the middle chest: nothing collapses." },
+    { "do": "checkpoint", "message": "Aim a chest at a stone wall or a bed: behaviour is the same as without the mod. Set [Stacking] Enable = false in the F6 hub: the chest-on-chest ghost is red again." }
+  ],
+  "asserts": [
+    { "check": "noErrors", "source": "ChestSnapping" }
+  ]
+}

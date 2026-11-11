@@ -24,6 +24,14 @@ Points are placed on the chest's real collider bounds, so chests snap flush agai
 
 How to use it: pick a point on the chest you are holding (for example *Bottom Back Right*), aim near a snap point on another piece (another chest's corner or face center, or a wall/floor corner), and it locks on within vanilla's snap range (0.5 m). Rotation still matters: match the other chest's rotation with the normal rotate controls so the faces line up.
 
+## Stacking chests without planks
+
+Vanilla only lets you put a chest on top of another chest when a plank or floor sits between them (a chest does not count as a building support). With `[Stacking] Enable` (on by default) a chest you aim at another chest is accepted, so you can stack chests directly, with or without a snap point selected. Chests never become real supports, so building stability is unchanged. Turn it off in the KY hub (F6) or the config to get vanilla behaviour back.
+
+## For mod authors
+
+To let your own storage chest snap and stack, call `ChestSnappingApi.RegisterChest("YourPrefabName")` (public static class in the ChestSnapping assembly, namespace `ChestSnapping`; `UnregisterChest`, `IsChest(GameObject)`, `IsStackingOn()` and `ApiVersion` are there too). No reference is needed: `Type.GetType("ChestSnapping.ChestSnappingApi, ChestSnapping")?.GetMethod("RegisterChest")?.Invoke(null, new object[] { "YourPrefabName" })`. Registering before ChestSnapping loads works. The player's `ExcludedPrefabs` and the `[Prefabs]` / `[Stacking]` switches still decide.
+
 Built-in chests: `piece_chest_wood`, `piece_chest`, `piece_chest_private`, `piece_chest_blackmetal`.
 
 ## Modded chests (or future vanilla chests)
