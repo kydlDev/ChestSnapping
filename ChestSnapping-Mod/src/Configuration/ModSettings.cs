@@ -18,6 +18,7 @@ internal static class ModSettings
     public static ConfigEntry<bool> AutoDetectContainers;
     public static ConfigEntry<float> SnapRange;
     public static ConfigEntry<bool> AlignRotation;
+    public static ConfigEntry<bool> VisibleBounds;
 
     // [Offsets]
     public static ConfigEntry<bool> OffsetsEnable;
@@ -75,6 +76,10 @@ internal static class ModSettings
         AlignRotation = config.Bind("Prefabs", "AlignRotation", true,
             "A chest that snaps to another chest takes over that chest's rotation (keeping the quarter turns you chose), so chests that only touch along an edge " +
             "or a face are not refused for overlapping by a few degrees. Off: you rotate it yourself like in vanilla.");
+
+        VisibleBounds = config.Bind("Prefabs", "VisibleBounds", true,
+            "Measure the chest box from its colliders AND its closed, visible meshes (not the open lid), because some chests (for example the Grausten chest) have a collider " +
+            "much smaller than what you see, so chests overlapped. Off: colliders only, like version 1.");
 
         OffsetsEnable = config.Bind("Offsets", "Enable", true,
             "Apply the saved per-prefab adjustments (PrefabAdjustments) to where the snap points sit. Off uses the measured chest box as it is.");

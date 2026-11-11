@@ -13,6 +13,7 @@
     { "guid": "com.kydldev.ChestSnapping", "section": "Prefabs", "key": "AutoDetectContainers", "value": "false" },
     { "guid": "com.kydldev.ChestSnapping", "section": "Prefabs", "key": "SnapRange", "value": "1" },
     { "guid": "com.kydldev.ChestSnapping", "section": "Prefabs", "key": "AlignRotation", "value": "true" },
+    { "guid": "com.kydldev.ChestSnapping", "section": "Prefabs", "key": "VisibleBounds", "value": "true" },
     { "guid": "com.kydldev.ChestSnapping", "section": "Offsets", "key": "Enable", "value": "true" },
     { "guid": "com.kydldev.ChestSnapping", "section": "Offsets", "key": "PrefabAdjustments", "value": "" },
     { "guid": "com.kydldev.ChestSnapping", "section": "Stacking", "key": "Enable", "value": "true" },

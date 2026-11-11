@@ -13,7 +13,7 @@
 | ExcludedPrefabs live | - | - | excluded-prefab | - | Automated |
 | Saved shift moves the points; Offsets off ignores it | - | - | adjustment-applies | - | Automated |
 | Chest on chest without planks: decision rule, switches, a chest never stays a support | StackingRulesTests | - | stacking, stack-placement (the game's own Player.UpdatePlacementGhost: on Valid, off Invalid, plank Valid) | stack-feel (feel only) | Automated + Manual |
-| Every chest type (wood, reinforced, private, blackmetal, grausten): stack of 3, 3 side by side (aligned and ghost turned 22.5 degrees), row of 3 front to back, front to front: ghosts Valid, nothing destroyed. Chest side faces accepted; rotation aligned | ChestAlignmentTests | - | chests-wood, chests-reinforced, chests-private, chests-blackmetal, chests-grausten, snap-edge-floor | stack-feel | Automated + Manual |
+| Every chest type (wood, reinforced, private, blackmetal, grausten): stack of 3, 3 side by side (aligned and ghost turned 22.5 degrees), row of 3 front to back, front to front: ghosts Valid, nothing destroyed, the visible meshes of the placed chests do not overlap (placedVisibleOverlap). Chest side faces accepted; rotation aligned | ChestAlignmentTests | - | chests-wood, chests-reinforced, chests-private, chests-blackmetal, chests-grausten, snap-edge-floor | stack-feel | Automated + Manual |
 | A really placed stacked chest survives the game's support check (control: collapses with the switch off) | - | - | stack-survives | stack-feel | Automated |
 | Public API for other mods (RegisterChest / UnregisterChest) | - | - | api-register | - | Automated |
 | Config layout, patch target, suite rules | - | SettingsTests, PatchTargetsTests, SuiteRulesTests | - | - | Automated |

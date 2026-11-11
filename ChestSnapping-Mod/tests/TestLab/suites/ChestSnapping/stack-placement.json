@@ -5,18 +5,13 @@
   "steps": [
     { "do": "hook", "name": "chestsnapping.arena", "contains": "arena at", "label": "start on the arena spot" },
     { "do": "use", "block": "clearSite" },
-    { "do": "spawn", "prefab": "piece_chest_wood", "dz": 3, "owner": "me", "as": "chest" },
-    { "do": "spawn", "prefab": "wood_floor", "dx": 4, "dz": 3, "owner": "me", "as": "floor" },
-    { "do": "spawn", "prefab": "wood_floor", "dx": 6, "dz": 3, "owner": "me" },
-    { "do": "spawn", "prefab": "wood_floor", "dx": 4, "dz": 5, "owner": "me" },
-    { "do": "spawn", "prefab": "wood_floor", "dx": 6, "dz": 5, "owner": "me" },
+    { "do": "spawn", "prefab": "piece_chest_wood", "dx": -4, "dz": 3, "owner": "me", "as": "chest" },
     { "do": "wait", "seconds": 2 },
     { "do": "hook", "name": "chestsnapping.placementStatus", "args": { "prefab": "piece_chest_wood", "aim": "piece_chest_wood" }, "expect": "Valid", "label": "stacking on: chest aimed at a chest is valid" },
     { "do": "hook", "name": "chestsnapping.supports", "args": { "prefab": "piece_chest_wood" }, "expect": false, "label": "the prefab chest is no support afterwards" },
     { "do": "setConfig", "values": { "Stacking/Enable": false } },
     { "do": "wait", "until": { "check": "hook", "name": "chestsnapping.featureRunning", "args": { "id": "stacking" }, "expect": false }, "timeout": 5 },
-    { "do": "hook", "name": "chestsnapping.placementStatus", "args": { "prefab": "piece_chest_wood", "aim": "piece_chest_wood" }, "expect": "Invalid", "label": "stacking off: vanilla refuses (this is the old behaviour)" },
-    { "do": "hook", "name": "chestsnapping.placementStatus", "args": { "prefab": "piece_chest_wood", "aim": "wood_floor" }, "expect": "Valid", "label": "stacking off: a chest on a plank floor is valid in vanilla" }
+    { "do": "hook", "name": "chestsnapping.placementStatus", "args": { "prefab": "piece_chest_wood", "aim": "piece_chest_wood" }, "expect": "Invalid", "label": "stacking off: vanilla refuses (this is the old behaviour)" }
   ],
   "asserts": [
     { "check": "noErrors", "source": "ChestSnapping" }

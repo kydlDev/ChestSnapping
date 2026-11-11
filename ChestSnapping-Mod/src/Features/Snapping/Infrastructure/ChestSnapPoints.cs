@@ -132,6 +132,8 @@ internal static class ChestSnapPoints
 
     private static void AddPoints(Transform root, string prefabName)
     {
+        EnsureVisibleBox(root, prefabName);
+
         Vector3[] positions;
         if (!TryComputePositions(root, prefabName, out positions)) return;
 
@@ -167,6 +169,13 @@ internal static class ChestSnapPoints
         for (int i = root.childCount - 1; i >= 0; i--)
         {
             Transform child = root.GetChild(i);
+            if (child.name == VisibleBoxName)
+            {
+                UnityEngine.Object.Destroy(child.gameObject);
+                ResetSupportColliders(root);
+                continue;
+            }
+
             if (!child.name.StartsWith(NamePrefix, StringComparison.Ordinal)) continue;
 
             // Destroy() is deferred to end of frame; un-tag first so Piece.GetSnapPoints ignores it immediately.
@@ -245,7 +254,11 @@ internal static class ChestSnapPoints
             Encapsulate(ref bounds, ref found, worldToRoot * col.transform.localToWorldMatrix, center, size);
         }
 
-        if (found) return true;
+        if (found)
+        {
+            if (ModSettings.VisibleBounds != null && ModSettings.VisibleBounds.Value) EncapsulateVisibleMeshes(root, worldToRoot, ref bounds, ref found);
+            return true;
+        }
 
         foreach (MeshFilter mf in root.GetComponentsInChildren<MeshFilter>(true))
         {
@@ -259,6 +272,84 @@ internal static class ChestSnapPoints
         }
 
         return found;
+    }
+
+    /// <summary>
+    /// Adds the meshes you actually see on a closed chest to the box: enabled, active (also every parent up to the root), not the "open" lid and not our debug markers.
+    /// Some chests (the Grausten chest) have a collider far smaller than the visible chest, so chests snapped into each other.
+    /// </summary>
+    private static void EncapsulateVisibleMeshes(Transform root, Matrix4x4 worldToRoot, ref Bounds bounds, ref bool found)
+    {
+        foreach (MeshRenderer mr in root.GetComponentsInChildren<MeshRenderer>(true))
+        {
+            if (mr == null || !mr.enabled) continue;
+
+            string name = mr.gameObject.name;
+            if (name == SnapMarkers.MarkerName || name.IndexOf("open", StringComparison.OrdinalIgnoreCase) >= 0) continue;
+
+            bool active = true;
+            for (Transform t = mr.transform; t != null && t != root.parent; t = t.parent)
+                if (!t.gameObject.activeSelf) { active = false; break; }
+            if (!active) continue;
+
+            MeshFilter mf = mr.GetComponent<MeshFilter>();
+            if (mf == null || mf.sharedMesh == null) continue;
+
+            Encapsulate(ref bounds, ref found, worldToRoot * mf.transform.localToWorldMatrix, mf.sharedMesh.bounds.center, mf.sharedMesh.bounds.size);
+        }
+    }
+
+    private const string VisibleBoxName = "ChestSnapVisibleBox";
+
+    /// <summary>
+    /// Some chests have a collider far smaller than the chest you see (the Grausten chest: the lid is not in it), so chests were placed into each other and a chest on top
+    /// of it had no support within reach (the game destroyed it). When the visible closed meshes stick out of the colliders by more than 8 cm, one box collider
+    /// that covers the visible chest is added (same layer as the chest's own colliders); it is removed again with the snap points.
+    /// </summary>
+    private static void EnsureVisibleBox(Transform root, string prefabName)
+    {
+        if (ModSettings.VisibleBounds == null || !ModSettings.VisibleBounds.Value) return;
+        if (root.Find(VisibleBoxName) != null) return;
+
+        Bounds solid = default(Bounds);
+        bool found = false;
+        int layer = root.gameObject.layer;
+        Matrix4x4 worldToRoot = root.worldToLocalMatrix;
+        foreach (Collider col in root.GetComponentsInChildren<Collider>(true))
+        {
+            if (col == null || col.isTrigger) continue;
+            Vector3 center, size;
+            if (!TryGetColliderBox(col, out center, out size)) continue;
+            if (!found) layer = col.gameObject.layer;
+            Encapsulate(ref solid, ref found, worldToRoot * col.transform.localToWorldMatrix, center, size);
+        }
+
+        if (!found) return;
+
+        Bounds all = solid;
+        bool foundAll = true;
+        EncapsulateVisibleMeshes(root, worldToRoot, ref all, ref foundAll);
+
+        const float tolerance = 0.08f;
+        bool sticksOut = all.max.x > solid.max.x + tolerance || all.max.y > solid.max.y + tolerance || all.max.z > solid.max.z + tolerance
+            || all.min.x < solid.min.x - tolerance || all.min.y < solid.min.y - tolerance || all.min.z < solid.min.z - tolerance;
+        if (!sticksOut) return;
+
+        var go = new GameObject(VisibleBoxName);
+        go.layer = layer;
+        go.transform.SetParent(root, false);
+        BoxCollider box = go.AddComponent<BoxCollider>();
+        box.center = all.center;
+        box.size = all.size;
+        ResetSupportColliders(root);
+        ModLog.Verbose("ChestSnapPoints: " + prefabName + " has a collider smaller than the chest you see - added a body box " + all.size.ToString("0.00"));
+    }
+
+    /// <summary>WearNTear caches its colliders: make it read them again so the new (or removed) box counts for the support check.</summary>
+    private static void ResetSupportColliders(Transform root)
+    {
+        WearNTear wear = root.GetComponent<WearNTear>();
+        if (wear != null) HarmonyLib.Traverse.Create(wear).Field("m_colliders").SetValue(null);
     }
 
     private static bool TryGetColliderBox(Collider col, out Vector3 center, out Vector3 size)

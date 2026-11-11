@@ -486,4 +486,114 @@ internal static class ModTestHooks
         PropertyInfo busy = builder?.GetProperty("Busy", BindingFlags.Public | BindingFlags.Static);
         return busy != null && (bool)busy.GetValue(null, null);
     }
+
+    /// <summary>Collider bounds vs. visible mesh (renderer) bounds of a chest prefab, in its local space: shows whether the snap box (colliders) is smaller than what you see.</summary>
+    [TestHook("chestsnapping.boundsInfo")]
+    private static string BoundsInfo(string prefab)
+    {
+        if (prefab.Contains(","))
+        {
+            string all = "";
+            foreach (string one in prefab.Split(',')) all += BoundsInfo(one) + " || ";
+            return all;
+        }
+
+        GameObject go = Prefab(prefab);
+        Bounds col;
+        string c = ChestSnapPoints.TryGetLocalBounds(go.transform, out col) ? col.center.ToString("0.000") + " size " + col.size.ToString("0.000") : "none";
+        Bounds mesh = default(Bounds);
+        bool any = false;
+        foreach (Renderer r in go.GetComponentsInChildren<Renderer>(true))
+        {
+            MeshFilter mf = r.GetComponent<MeshFilter>();
+            if (mf == null || mf.sharedMesh == null || r.GetComponent<ParticleSystemRenderer>() != null) continue;
+            Matrix4x4 m = go.transform.worldToLocalMatrix * mf.transform.localToWorldMatrix;
+            Bounds b = mf.sharedMesh.bounds;
+            for (int i = 0; i < 8; i++)
+            {
+                Vector3 corner = b.center + Vector3.Scale(b.extents, new Vector3((i & 1) == 0 ? -1 : 1, (i & 2) == 0 ? -1 : 1, (i & 4) == 0 ? -1 : 1));
+                Vector3 p = m.MultiplyPoint3x4(corner);
+                if (!any) { mesh = new Bounds(p, Vector3.zero); any = true; } else mesh.Encapsulate(p);
+            }
+        }
+
+        string parts = "";
+        foreach (Renderer r in go.GetComponentsInChildren<Renderer>(true))
+        {
+            MeshFilter mf = r.GetComponent<MeshFilter>();
+            if (mf == null || mf.sharedMesh == null) continue;
+            Matrix4x4 m = go.transform.worldToLocalMatrix * mf.transform.localToWorldMatrix;
+            Bounds b = mf.sharedMesh.bounds;
+            Vector3 lo = m.MultiplyPoint3x4(b.min), hi = m.MultiplyPoint3x4(b.max);
+            Vector3 mn = Vector3.Min(lo, hi), mx = Vector3.Max(lo, hi);
+            parts += " [" + r.name + (r.enabled && r.gameObject.activeSelf ? "" : " OFF") + " " + mn.ToString("0.00") + ".." + mx.ToString("0.00") + "]";
+        }
+
+        return prefab + parts + " :: colliders center " + c + " | meshes center " + (any ? mesh.center.ToString("0.000") + " size " + mesh.size.ToString("0.000") : "none");
+    }
+
+    /// <summary>Largest overlap (m) between the VISIBLE closed meshes of the chests placed by the hooks (world boxes, so only exact for quarter turns). A chest inside another one shows as a big number. Example "max overlap 0.012 (#1 x #2)".</summary>
+    [TestHook("chestsnapping.placedVisibleOverlap")]
+    private static string PlacedVisibleOverlap()
+    {
+        var boxes = new System.Collections.Generic.List<Bounds>();
+        foreach (GameObject go in Placed)
+        {
+            Bounds b = default(Bounds);
+            bool any = false;
+            if (go != null)
+                foreach (MeshRenderer mr in go.GetComponentsInChildren<MeshRenderer>(false))
+                {
+                    if (!mr.enabled || mr.name.IndexOf("open", StringComparison.OrdinalIgnoreCase) >= 0 || mr.name.EndsWith("LOD")) continue;
+                    if (!any) { b = mr.bounds; any = true; } else b.Encapsulate(mr.bounds);
+                }
+
+            boxes.Add(b);
+        }
+
+        float worst = 0f;
+        string pair = "-";
+        for (int i = 0; i < boxes.Count; i++)
+            for (int j = i + 1; j < boxes.Count; j++)
+            {
+                Vector3 a = boxes[i].size, bsz = boxes[j].size;
+                if (a == Vector3.zero || bsz == Vector3.zero) continue;
+                Vector3 d = boxes[i].center - boxes[j].center;
+                float ox = (a.x + bsz.x) * 0.5f - Mathf.Abs(d.x);
+                float oy = (a.y + bsz.y) * 0.5f - Mathf.Abs(d.y);
+                float oz = (a.z + bsz.z) * 0.5f - Mathf.Abs(d.z);
+                if (ox <= 0f || oy <= 0f || oz <= 0f) continue;
+                float depth = Mathf.Min(ox, Mathf.Min(oy, oz));
+                if (depth > worst) { worst = depth; pair = "#" + i + " x #" + j; }
+            }
+
+        string r = "max overlap " + worst.ToString("0.000") + " (" + pair + ")";
+        ModLog.Verbose("ModTestHooks: placedVisibleOverlap " + r);
+        return r;
+    }
+
+    /// <summary>Puts every placed piece of a prefab within 25 m of the player at one common height: the highest of them plus <paramref name="above"/> metres (test floors that must be level and clear of terrain that is still settling). Returns "levelled N".</summary>
+    [TestHook("chestsnapping.liftPieces")]
+    private static string LiftPieces(string prefab, float above)
+    {
+        var pieces = new System.Collections.Generic.List<Piece>();
+        float top = float.MinValue;
+        foreach (Piece piece in UnityEngine.Object.FindObjectsByType<Piece>(FindObjectsSortMode.None))
+        {
+            if (piece.GetComponent<ZNetView>() == null || ChestSnapPoints.GetPrefabName(piece.gameObject) != prefab) continue;
+            if (Player.m_localPlayer != null && Vector3.Distance(piece.transform.position, Player.m_localPlayer.transform.position) > 25f) continue;
+            pieces.Add(piece);
+            top = Mathf.Max(top, piece.transform.position.y);
+        }
+
+        foreach (Piece piece in pieces)
+        {
+            Vector3 pos = piece.transform.position;
+            pos.y = top + above;
+            piece.transform.position = pos;
+        }
+
+        Physics.SyncTransforms();
+        return "levelled " + pieces.Count;
+    }
 }
