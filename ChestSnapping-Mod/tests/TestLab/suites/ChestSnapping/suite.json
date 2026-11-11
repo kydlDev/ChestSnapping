@@ -11,6 +11,7 @@
     { "guid": "com.kydldev.ChestSnapping", "section": "Prefabs", "key": "ExtraPrefabs", "value": "" },
     { "guid": "com.kydldev.ChestSnapping", "section": "Prefabs", "key": "ExcludedPrefabs", "value": "" },
     { "guid": "com.kydldev.ChestSnapping", "section": "Prefabs", "key": "AutoDetectContainers", "value": "false" },
+    { "guid": "com.kydldev.ChestSnapping", "section": "Prefabs", "key": "SnapRange", "value": "1" },
     { "guid": "com.kydldev.ChestSnapping", "section": "Offsets", "key": "Enable", "value": "true" },
     { "guid": "com.kydldev.ChestSnapping", "section": "Offsets", "key": "PrefabAdjustments", "value": "" },
     { "guid": "com.kydldev.ChestSnapping", "section": "Stacking", "key": "Enable", "value": "true" },
@@ -26,6 +27,7 @@
     "adjustment-applies",
     "stacking",
     "api-register",
-    "stack-placement"
+    "stack-placement",
+    "stack-survives"
   ]
 }

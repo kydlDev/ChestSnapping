@@ -2,6 +2,8 @@
 
 ## 2.0.0
 - New: chests can be placed on top of (or against) other chests without planks or floors. Vanilla refuses it because a chest does not count as a building support; the new `[Stacking] Enable` switch (also needs `[General] EnableAll`) lets a chest aimed at a chest pass that one check. Chests never become real supports, so building stability is unchanged. Checked with the TestLab suite (the game's own placement test says Valid for a chest on a chest, Invalid with the switch off).
+- Fix: a chest placed on a chest was destroyed by the game about 30 seconds later (vanilla gives no building support from a chest). A chest under another chest now counts as support in the game's support check; chests still support nothing else.
+- New `[Prefabs] SnapRange` (default 1 m, vanilla 0.5): how close a snap point of the chest you hold has to be to another snap point before it locks on, so chests find their snap point sooner.
 - New API for other mods: `ChestSnappingApi.RegisterChest(prefab)` makes their storage chests known (snap points and stacking). See the README.
 - Tested in game with the full TestLab suite (6 tests): 3 green runs in a row on 2026-11-05, plus the ecosystem run with all 12 KydlDev mods loaded together.
 - Breaking: ChestSnapping now needs the KydlCore mod (hard dependency). Install KydlCore as well.

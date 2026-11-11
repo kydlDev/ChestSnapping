@@ -171,4 +171,54 @@ internal static class ModTestHooks
         ModLog.Verbose("ModTestHooks: camera aimed at the top of " + aim + " at " + top + " from " + from);
         return cam;
     }
+
+    private static GameObject _stacked;
+
+    /// <summary>
+    /// Places a REAL chest of prefab <paramref name="prefab"/> on top of the <paramref name="index"/>-th nearest placed chest <paramref name="onPrefab"/> (0 = nearest),
+    /// the way Player.PlacePiece does (Instantiate with a ZNetView), so the game's building support runs on it. Returns "placed" or the reason it was not.
+    /// </summary>
+    [TestHook("chestsnapping.stackNew")]
+    private static string StackNew(string prefab, string onPrefab, int index)
+    {
+        Player player = Player.m_localPlayer;
+        if (player == null) throw new Exception("no local player");
+
+        var lowers = new System.Collections.Generic.List<Piece>();
+        foreach (Piece piece in UnityEngine.Object.FindObjectsByType<Piece>(FindObjectsSortMode.None))
+            if (piece.GetComponent<ZNetView>() != null && ChestSnapPoints.GetPrefabName(piece.gameObject) == onPrefab) lowers.Add(piece);
+        lowers.Sort((a, b) => Vector3.Distance(a.transform.position, player.transform.position).CompareTo(Vector3.Distance(b.transform.position, player.transform.position)));
+        if (index < 0 || index >= lowers.Count) return "no placed " + onPrefab + " with index " + index + " (found " + lowers.Count + ")";
+
+        Piece lower = lowers[index];
+        Bounds lowerBounds, newBounds;
+        if (!ChestSnapPoints.TryGetLocalBounds(lower.transform, out lowerBounds)) return "no bounds on the lower chest";
+        GameObject source = Prefab(prefab);
+        if (!ChestSnapPoints.TryGetLocalBounds(source.transform, out newBounds)) return "no bounds on " + prefab;
+
+        Vector3 top = lower.transform.TransformPoint(new Vector3(lowerBounds.center.x, lowerBounds.max.y, lowerBounds.center.z));
+        Vector3 pos = top + Vector3.up * (-newBounds.min.y);
+        pos.x = top.x; pos.z = top.z;
+        _stacked = UnityEngine.Object.Instantiate(source, pos, lower.transform.rotation);
+
+        // The game does not check support for the first 30 s of a piece's life (WearNTear.ShouldUpdate). Skip that grace period (test only);
+        // the support rule itself is the game's own UpdateSupport.
+        WearNTear wear = _stacked.GetComponent<WearNTear>();
+        if (wear != null) Traverse.Create(wear).Field("m_createTime").SetValue(-1f);
+        ModLog.Verbose("ModTestHooks: stackNew " + prefab + " on " + onPrefab + " #" + index + " at " + pos);
+        return "placed";
+    }
+
+    /// <summary>Does the chest placed by stackNew still exist (the game destroys a piece without support)?</summary>
+    [TestHook("chestsnapping.stackedExists")]
+    private static bool StackedExists() { return _stacked != null; }
+
+    /// <summary>Does the stacked chest have building support (WearNTear.HaveSupport)? False when it is gone.</summary>
+    [TestHook("chestsnapping.stackedSupported")]
+    private static bool StackedSupported()
+    {
+        if (_stacked == null) return false;
+        WearNTear wear = _stacked.GetComponent<WearNTear>();
+        return wear != null && Traverse.Create(wear).Method("HaveSupport").GetValue<bool>();
+    }
 }

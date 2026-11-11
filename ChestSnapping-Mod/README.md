@@ -26,7 +26,7 @@ How to use it: pick a point on the chest you are holding (for example *Bottom Ba
 
 ## Stacking chests without planks
 
-Vanilla only lets you put a chest on top of another chest when a plank or floor sits between them (a chest does not count as a building support). With `[Stacking] Enable` (on by default) a chest you aim at another chest is accepted, so you can stack chests directly, with or without a snap point selected. Chests never become real supports, so building stability is unchanged. Turn it off in the KY hub (F6) or the config to get vanilla behaviour back.
+Vanilla only lets you put a chest on top of another chest when a plank or floor sits between them (a chest does not count as a building support). With `[Stacking] Enable` (on by default) a chest you aim at another chest is accepted, so you can stack chests directly, with or without a snap point selected. A chest under another chest counts as its support (otherwise the game destroys the top chest after about 30 seconds); a chest still supports nothing else, so floors, walls and the like cannot be built on it. Turn it off in the KY hub (F6) or the config to get vanilla behaviour back.
 
 ## For mod authors
 

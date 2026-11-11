@@ -16,6 +16,7 @@ internal static class ModSettings
     public static ConfigEntry<string> ExtraPrefabs;
     public static ConfigEntry<string> ExcludedPrefabs;
     public static ConfigEntry<bool> AutoDetectContainers;
+    public static ConfigEntry<float> SnapRange;
 
     // [Offsets]
     public static ConfigEntry<bool> OffsetsEnable;
@@ -64,6 +65,11 @@ internal static class ModSettings
             "If true, every buildable piece that has a Container component on its root object (and is not a ship or cart) " +
             "automatically gets snap points. Handy for modded chests, but may also catch things you do not " +
             "consider a chest - use ExcludedPrefabs to opt those out.");
+
+        SnapRange = config.Bind("Prefabs", "SnapRange", 1.0f,
+            new ConfigDescription("How close (metres) a snap point of the chest you hold has to be to a snap point of another piece before it locks on. " +
+                "Vanilla uses 0.5 for everything, which makes chests hard to snap; 1.0 finds the point sooner. Only applies to chests (snap points on).",
+                new AcceptableValueRange<float>(0.5f, 3f)));
 
         OffsetsEnable = config.Bind("Offsets", "Enable", true,
             "Apply the saved per-prefab adjustments (PrefabAdjustments) to where the snap points sit. Off uses the measured chest box as it is.");

@@ -13,6 +13,7 @@
 | ExcludedPrefabs live | - | - | excluded-prefab | - | Automated |
 | Saved shift moves the points; Offsets off ignores it | - | - | adjustment-applies | - | Automated |
 | Chest on chest without planks: decision rule, switches, a chest never stays a support | StackingRulesTests | - | stacking, stack-placement (the game's own Player.UpdatePlacementGhost: on Valid, off Invalid, plank Valid) | stack-feel (feel only) | Automated + Manual |
+| A really placed stacked chest survives the game's support check (control: collapses with the switch off) | - | - | stack-survives | stack-feel | Automated |
 | Public API for other mods (RegisterChest / UnregisterChest) | - | - | api-register | - | Automated |
 | Config layout, patch target, suite rules | - | SettingsTests, PatchTargetsTests, SuiteRulesTests | - | - | Automated |
 | Q / E cycling, flush snapping to another chest | | | | snap-feel | Gap |
