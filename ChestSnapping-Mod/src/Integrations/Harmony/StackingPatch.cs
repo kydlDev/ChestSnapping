@@ -31,10 +31,21 @@ internal static class StackingPatch
         int mask = (ghostPiece.m_waterPiece || ghostPiece.m_noInWater) ? ___m_placeWaterRayMask : ___m_placeRayMask;
         Transform cam = GameCamera.instance.transform;
         RaycastHit hit;
-        if (!Physics.Raycast(cam.position, cam.forward, out hit, RayLength, mask)) return;
-        if (hit.collider == null || hit.collider.attachedRigidbody != null) return;
+        if (!Physics.Raycast(cam.position, cam.forward, out hit, RayLength, mask))
+        {
+            ModLog.Verbose("StackingPatch: camera ray hit nothing (mask " + mask + ") - vanilla decides");
+            return;
+        }
 
-        __state = Decide(___m_placementGhost, hit.collider.GetComponentInParent<Piece>());
+        if (hit.collider == null || hit.collider.attachedRigidbody != null)
+        {
+            ModLog.Verbose("StackingPatch: ray hit " + (hit.collider == null ? "no collider" : hit.collider.name + " (has a rigidbody)") + " - vanilla decides");
+            return;
+        }
+
+        Piece hitPiece = hit.collider.GetComponentInParent<Piece>();
+        ModLog.Verbose("StackingPatch: ray hit " + hit.collider.name + ", piece " + (hitPiece == null ? "none" : hitPiece.name));
+        __state = Decide(___m_placementGhost, hitPiece);
         if (__state != null)
         {
             __state.m_supports = true;

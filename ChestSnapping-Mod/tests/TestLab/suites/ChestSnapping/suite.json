@@ -25,6 +25,7 @@
     "excluded-prefab",
     "adjustment-applies",
     "stacking",
-    "api-register"
+    "api-register",
+    "stack-placement"
   ]
 }
