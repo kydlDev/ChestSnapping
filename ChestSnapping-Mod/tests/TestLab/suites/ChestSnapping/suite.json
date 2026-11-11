@@ -12,6 +12,7 @@
     { "guid": "com.kydldev.ChestSnapping", "section": "Prefabs", "key": "ExcludedPrefabs", "value": "" },
     { "guid": "com.kydldev.ChestSnapping", "section": "Prefabs", "key": "AutoDetectContainers", "value": "false" },
     { "guid": "com.kydldev.ChestSnapping", "section": "Prefabs", "key": "SnapRange", "value": "1" },
+    { "guid": "com.kydldev.ChestSnapping", "section": "Prefabs", "key": "AlignRotation", "value": "true" },
     { "guid": "com.kydldev.ChestSnapping", "section": "Offsets", "key": "Enable", "value": "true" },
     { "guid": "com.kydldev.ChestSnapping", "section": "Offsets", "key": "PrefabAdjustments", "value": "" },
     { "guid": "com.kydldev.ChestSnapping", "section": "Stacking", "key": "Enable", "value": "true" },
@@ -28,6 +29,12 @@
     "stacking",
     "api-register",
     "stack-placement",
-    "stack-survives"
+    "stack-survives",
+    "snap-edge-floor",
+    "chests-wood",
+    "chests-reinforced",
+    "chests-private",
+    "chests-blackmetal",
+    "chests-grausten"
   ]
 }

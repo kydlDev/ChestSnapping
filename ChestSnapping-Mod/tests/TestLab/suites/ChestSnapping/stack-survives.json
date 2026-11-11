@@ -4,6 +4,7 @@
   "timeout": 120,
   "steps": [
     { "do": "hook", "name": "chestsnapping.arena", "contains": "arena at", "label": "start on the arena spot" },
+    { "do": "use", "block": "clearSite" },
     { "do": "spawn", "prefab": "piece_chest_wood", "dz": 3, "owner": "me", "as": "lowerA" },
     { "do": "spawn", "prefab": "piece_chest_wood", "dx": 6, "dz": 3, "owner": "me", "as": "lowerB" },
     { "do": "hook", "name": "chestsnapping.stackNew", "args": { "prefab": "piece_chest_wood", "onPrefab": "piece_chest_wood", "index": 0 }, "expect": "placed", "label": "stacking on: chest placed on chest A" },

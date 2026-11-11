@@ -16,7 +16,7 @@ internal static class StackingPatch
 {
     private const float RayLength = 50f; // same as Player.PieceRayTest
 
-    private static void Prefix(GameObject ___m_placementGhost, int ___m_placeRayMask, int ___m_placeWaterRayMask, out WearNTear __state)
+    private static void Prefix(GameObject ___m_placementGhost, int ___m_placeRayMask, int ___m_placeWaterRayMask, out State __state)
     {
         __state = null;
         if (!ModSettings.StackingOn || ___m_placementGhost == null || GameCamera.instance == null) return;
@@ -45,18 +45,31 @@ internal static class StackingPatch
 
         Piece hitPiece = hit.collider.GetComponentInParent<Piece>();
         ModLog.Verbose("StackingPatch: ray hit " + hit.collider.name + ", piece " + (hitPiece == null ? "none" : hitPiece.name));
-        __state = Decide(___m_placementGhost, hitPiece);
-        if (__state != null)
-        {
-            __state.m_supports = true;
-            ModLog.Verbose("StackingPatch: " + ChestSnapPoints.GetPrefabName(___m_placementGhost) + " aimed at chest "
-                + ChestSnapPoints.GetPrefabName(__state.gameObject) + " - counted as a support for this placement test");
-        }
+        WearNTear wear = Decide(___m_placementGhost, hitPiece);
+        if (wear == null) return;
+
+        __state = new State { Wear = wear, Ghost = ghostPiece, GhostNotOnTilting = ghostPiece.m_notOnTiltingSurface };
+        wear.m_supports = true;
+        // Aiming at the SIDE of a chest (side by side / front to back) gives a ray normal that is not "up": vanilla's m_notOnTiltingSurface
+        // would call that a tilted surface. The snap moves the ghost onto the ground / floor anyway, so it is allowed for this call.
+        ghostPiece.m_notOnTiltingSurface = false;
+        ModLog.Verbose("StackingPatch: " + ChestSnapPoints.GetPrefabName(___m_placementGhost) + " aimed at chest "
+            + ChestSnapPoints.GetPrefabName(wear.gameObject) + " - counted as a support, side faces allowed, for this placement test");
     }
 
-    private static void Finalizer(WearNTear __state)
+    private static void Finalizer(State __state)
     {
-        if (__state != null) __state.m_supports = false;
+        if (__state == null) return;
+        __state.Wear.m_supports = false;
+        if (__state.Ghost != null) __state.Ghost.m_notOnTiltingSurface = __state.GhostNotOnTilting;
+    }
+
+    /// <summary>What Prefix changed, so Finalizer can put it back.</summary>
+    internal sealed class State
+    {
+        public WearNTear Wear;
+        public Piece Ghost;
+        public bool GhostNotOnTilting;
     }
 
     /// <summary>The WearNTear that has to count as a support for this placement test, or null (also used by the TestLab hook).</summary>

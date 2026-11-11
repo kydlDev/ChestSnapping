@@ -17,6 +17,7 @@ internal static class ModSettings
     public static ConfigEntry<string> ExcludedPrefabs;
     public static ConfigEntry<bool> AutoDetectContainers;
     public static ConfigEntry<float> SnapRange;
+    public static ConfigEntry<bool> AlignRotation;
 
     // [Offsets]
     public static ConfigEntry<bool> OffsetsEnable;
@@ -70,6 +71,10 @@ internal static class ModSettings
             new ConfigDescription("How close (metres) a snap point of the chest you hold has to be to a snap point of another piece before it locks on. " +
                 "Vanilla uses 0.5 for everything, which makes chests hard to snap; 1.0 finds the point sooner. Only applies to chests (snap points on).",
                 new AcceptableValueRange<float>(0.5f, 3f)));
+
+        AlignRotation = config.Bind("Prefabs", "AlignRotation", true,
+            "A chest that snaps to another chest takes over that chest's rotation (keeping the quarter turns you chose), so chests that only touch along an edge " +
+            "or a face are not refused for overlapping by a few degrees. Off: you rotate it yourself like in vanilla.");
 
         OffsetsEnable = config.Bind("Offsets", "Enable", true,
             "Apply the saved per-prefab adjustments (PrefabAdjustments) to where the snap points sit. Off uses the measured chest box as it is.");

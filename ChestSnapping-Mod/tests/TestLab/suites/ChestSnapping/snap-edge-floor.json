@@ -1,0 +1,21 @@
+{
+  "name": "snap-edge-floor",
+  "description": "The whole vanilla placement pipeline on a flat stone floor: a chest in the hand with a forced snap point, aimed at a snap point of a placed chest, must be Valid when the two only touch along an edge or a face (side by side, front to back).",
+  "timeout": 60,
+  "steps": [
+    { "do": "hook", "name": "chestsnapping.arena", "contains": "arena at", "label": "start on the arena spot" },
+    { "do": "use", "block": "clearSite" },
+    { "do": "spawn", "prefab": "wood_floor", "dz": 5, "owner": "me", "as": "floor" },
+    { "do": "hook", "name": "chestsnapping.stackNew", "args": { "prefab": "piece_chest_wood", "onPrefab": "wood_floor", "index": 0 }, "expect": "placed", "label": "a chest on the floor" },
+    { "do": "hook", "name": "chestsnapping.snapPlacement", "args": { "prefab": "piece_chest_wood", "onPrefab": "piece_chest_wood", "ghostPoint": 3, "targetPoint": 2, "rotation": 0 }, "contains": "status=Valid", "label": "side by side: ghost bottom back right on the chest's bottom back left" },
+    { "do": "hook", "name": "chestsnapping.snapPlacement", "args": { "prefab": "piece_chest_wood", "onPrefab": "piece_chest_wood", "ghostPoint": 2, "targetPoint": 3, "rotation": 0 }, "contains": "status=Valid", "label": "side by side, the other side" },
+    { "do": "hook", "name": "chestsnapping.snapPlacement", "args": { "prefab": "piece_chest_wood", "onPrefab": "piece_chest_wood", "ghostPoint": 2, "targetPoint": 0, "rotation": 0 }, "contains": "status=Valid", "label": "front to back: ghost bottom back left on the chest's bottom front left" },
+    { "do": "hook", "name": "chestsnapping.snapPlacement", "args": { "prefab": "piece_chest_wood", "onPrefab": "piece_chest_wood", "ghostPoint": 0, "targetPoint": 2, "rotation": 0 }, "contains": "status=Valid", "label": "front to back, the other way" },
+    { "do": "hook", "name": "chestsnapping.snapPlacement", "args": { "prefab": "piece_chest_wood", "onPrefab": "piece_chest_wood", "ghostPoint": 0, "targetPoint": 6, "rotation": 0 }, "contains": "status=Valid", "label": "stacked: ghost bottom front left on the chest's top front left" },
+    { "do": "hook", "name": "chestsnapping.snapPlacement", "args": { "prefab": "piece_chest_wood", "onPrefab": "piece_chest_wood", "ghostPoint": 2, "targetPoint": 3, "rotation": 1 }, "contains": "status=Valid", "label": "ghost turned 22.5 degrees off: it takes the chest's rotation and is valid (this was the red ghost)" },
+    { "do": "hook", "name": "chestsnapping.snapPlacement", "args": { "prefab": "piece_chest_wood", "onPrefab": "piece_chest_wood", "ghostPoint": 0, "targetPoint": 2, "rotation": 15 }, "contains": "status=Valid", "label": "22.5 degrees the other way, front to back" }
+  ],
+  "asserts": [
+    { "check": "noErrors", "source": "ChestSnapping" }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "params": { "prefab": null },
+  "steps": [
+    { "do": "hook", "name": "chestsnapping.placedClear", "label": "{{prefab}}: no chests left from an earlier test" },
+    { "do": "spawn", "prefab": "wood_floor", "dx": -4, "dz": 6, "owner": "me" },
+    { "do": "spawn", "prefab": "wood_floor", "dx": -2, "dz": 6, "owner": "me" },
+    { "do": "spawn", "prefab": "wood_floor", "dx": 0, "dz": 6, "owner": "me" },
+    { "do": "spawn", "prefab": "wood_floor", "dx": 2, "dz": 6, "owner": "me" },
+    { "do": "spawn", "prefab": "wood_floor", "dx": -4, "dz": 4, "owner": "me" },
+    { "do": "spawn", "prefab": "wood_floor", "dx": -2, "dz": 4, "owner": "me" },
+    { "do": "spawn", "prefab": "wood_floor", "dx": 0, "dz": 4, "owner": "me" },
+    { "do": "spawn", "prefab": "wood_floor", "dx": 2, "dz": 4, "owner": "me" },
+    { "do": "hook", "name": "chestsnapping.source", "args": { "prefab": "{{prefab}}" }, "expect": "default", "label": "{{prefab}} is a known chest" },
+    { "do": "hook", "name": "chestsnapping.stackNew", "args": { "prefab": "{{prefab}}", "onPrefab": "wood_floor", "index": 4 }, "expect": "placed", "label": "{{prefab}}: base chest on the floor (#0)" },
+    { "do": "hook", "name": "chestsnapping.stackNew", "args": { "prefab": "{{prefab}}", "onPrefab": "{{prefab}}", "index": 0, "onIndex": 0 }, "expect": "placed", "label": "{{prefab}}: 2nd chest of the stack (#1)" },
+    { "do": "hook", "name": "chestsnapping.stackNew", "args": { "prefab": "{{prefab}}", "onPrefab": "{{prefab}}", "index": 0, "onIndex": 1 }, "expect": "placed", "label": "{{prefab}}: 3rd chest of the stack (#2)" },
+    { "do": "hook", "name": "chestsnapping.snapPlacement", "args": { "prefab": "{{prefab}}", "onPrefab": "{{prefab}}", "ghostPoint": 3, "targetPoint": 2, "rotation": 0, "onIndex": 0, "place": true }, "contains": "PLACED as #3", "label": "{{prefab}}: 2nd chest side by side, aligned (#3)" },
+    { "do": "hook", "name": "chestsnapping.snapPlacement", "args": { "prefab": "{{prefab}}", "onPrefab": "{{prefab}}", "ghostPoint": 3, "targetPoint": 2, "rotation": 1, "onIndex": 3, "place": true }, "contains": "PLACED as #4", "label": "{{prefab}}: 3rd chest side by side, ghost turned 22.5 degrees (#4)" },
+    { "do": "hook", "name": "chestsnapping.snapPlacement", "args": { "prefab": "{{prefab}}", "onPrefab": "{{prefab}}", "ghostPoint": 0, "targetPoint": 1, "rotation": 8, "onIndex": 0, "place": true }, "contains": "PLACED as #5", "label": "{{prefab}}: front to front, ghost turned 180 degrees (#5)" },
+    { "do": "hook", "name": "chestsnapping.snapPlacement", "args": { "prefab": "{{prefab}}", "onPrefab": "{{prefab}}", "ghostPoint": 0, "targetPoint": 2, "rotation": 0, "onIndex": 0, "place": true }, "contains": "PLACED as #6", "label": "{{prefab}}: row of 3 front to back - 2nd chest behind the first (#6)" },
+    { "do": "hook", "name": "chestsnapping.snapPlacement", "args": { "prefab": "{{prefab}}", "onPrefab": "{{prefab}}", "ghostPoint": 0, "targetPoint": 2, "rotation": 0, "onIndex": 6, "place": true }, "contains": "PLACED as #7", "label": "{{prefab}}: row of 3 front to back - 3rd chest behind the 2nd (#7)" },
+    { "do": "wait", "seconds": 10 },
+    { "do": "hook", "name": "chestsnapping.placedStatus", "expect": "8 placed, 8 alive, 8 supported", "label": "{{prefab}}: all eight still there with building support" },
+    { "do": "hook", "name": "chestsnapping.placedClear", "label": "{{prefab}}: clean up" }
+  ]
+}

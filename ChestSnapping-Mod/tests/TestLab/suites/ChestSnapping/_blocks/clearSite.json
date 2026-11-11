@@ -1,0 +1,8 @@
+{
+  "params": {},
+  "steps": [
+    { "do": "hook", "name": "chestsnapping.clearArea", "args": { "radius": 14 }, "expect": "started", "label": "clear trees, bushes and rocks and level the ground (DrakesTestLab's arena builder)" },
+    { "do": "wait", "until": { "check": "hook", "name": "chestsnapping.areaBusy", "expect": false }, "timeout": 30 },
+    { "do": "wait", "seconds": 4 }
+  ]
+}

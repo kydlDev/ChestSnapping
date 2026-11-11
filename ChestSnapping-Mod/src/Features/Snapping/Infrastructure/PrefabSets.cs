@@ -13,6 +13,7 @@ internal static class PrefabSets
         "piece_chest",            // Reinforced chest
         "piece_chest_private",    // Private chest
         "piece_chest_blackmetal", // Blackmetal chest
+        "piece_chest_grausten",   // Grausten chest
     };
 
     /// <summary>Default + extra prefabs.</summary>

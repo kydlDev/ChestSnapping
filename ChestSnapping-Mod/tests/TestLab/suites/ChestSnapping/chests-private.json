@@ -1,0 +1,13 @@
+{
+  "name": "chests-private",
+  "description": "piece_chest_private: a stack of 3, 3 side by side (one with the ghost turned off-axis) one front to front and a row of 3 front to back - every ghost Valid, nothing destroyed by the game's support check.",
+  "timeout": 90,
+  "steps": [
+    { "do": "hook", "name": "chestsnapping.arena", "contains": "arena at", "label": "start on the arena spot" },
+    { "do": "use", "block": "clearSite" },
+    { "do": "use", "block": "chestBattery", "args": { "prefab": "piece_chest_private" } }
+  ],
+  "asserts": [
+    { "check": "noErrors", "source": "ChestSnapping" }
+  ]
+}
