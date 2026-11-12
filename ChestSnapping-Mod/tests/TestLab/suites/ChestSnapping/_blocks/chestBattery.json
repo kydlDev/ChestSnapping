@@ -41,6 +41,34 @@
       "do": "spawn",
       "prefab": "wood_floor",
       "dx": -4,
+      "dz": 8,
+      "owner": "me"
+    },
+    {
+      "do": "spawn",
+      "prefab": "wood_floor",
+      "dx": -2,
+      "dz": 8,
+      "owner": "me"
+    },
+    {
+      "do": "spawn",
+      "prefab": "wood_floor",
+      "dx": 0,
+      "dz": 8,
+      "owner": "me"
+    },
+    {
+      "do": "spawn",
+      "prefab": "wood_floor",
+      "dx": 2,
+      "dz": 8,
+      "owner": "me"
+    },
+    {
+      "do": "spawn",
+      "prefab": "wood_floor",
+      "dx": -4,
       "dz": 4,
       "owner": "me"
     },
@@ -225,6 +253,12 @@
     {
       "do": "wait",
       "seconds": 10
+    },
+    {
+      "do": "hook",
+      "name": "chestsnapping.placedLayout",
+      "contains": "layout ok",
+      "label": "{{prefab}}: neat layout - stacked straight, side by side level and in line, row in line, everything rests on something"
     },
     {
       "do": "hook",

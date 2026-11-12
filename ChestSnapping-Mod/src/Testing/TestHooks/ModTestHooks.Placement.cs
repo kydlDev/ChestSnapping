@@ -157,7 +157,33 @@ internal static partial class ModTestHooks
                 }
             }
 
-            string r = "status=" + status + " gap=" + gap.ToString("0.000") + " clip=" + worst.ToString("0.000") + " pairs=" + pairs
+            var snappedTo = new System.Text.StringBuilder();
+            if (ghostPointTransform != null)
+            {
+                var pts = new System.Collections.Generic.List<Transform>();
+                foreach (Piece other in UnityEngine.Object.FindObjectsByType<Piece>(FindObjectsSortMode.None))
+                {
+                    if (other.gameObject == ghost || Vector3.Distance(other.transform.position, ghost.transform.position) > 6f) continue;
+                    pts.Clear();
+                    other.GetSnapPoints(pts);
+                    for (int i = 0; i < pts.Count; i++)
+                        if (Vector3.Distance(pts[i].position, ghostPointTransform.position) < 0.03f)
+                            snappedTo.Append(other.name).Append("[").Append(i).Append("]y=").Append(pts[i].position.y.ToString("0.000")).Append(" ");
+                }
+            }
+
+            var near = new System.Text.StringBuilder();
+            if (ghostPointTransform != null)
+            {
+                var all = new System.Collections.Generic.List<Transform>();
+                var ps = new System.Collections.Generic.List<Piece>();
+                Piece.GetSnapPoints(ghost.transform.position, 10f, all, ps);
+                all.Sort((x, y) => Vector3.Distance(x.position, ghostPointTransform.position).CompareTo(Vector3.Distance(y.position, ghostPointTransform.position)));
+                for (int i = 0; i < Mathf.Min(3, all.Count); i++)
+                    near.Append(all[i].GetComponentInParent<Piece>().name).Append(":").Append(all[i].name).Append(all[i].position.ToString("0.000")).Append(" d=").Append(Vector3.Distance(all[i].position, ghostPointTransform.position).ToString("0.000")).Append(" ; ");
+            }
+
+            string r = "nearest=" + near + " snappedTo=" + snappedTo + " status=" + status + " gap=" + gap.ToString("0.000") + " clip=" + worst.ToString("0.000") + " pairs=" + pairs
                 + " | cam " + from.ToString("0.00") + " aim " + aimAt.ToString("0.00") + " | ghost pos " + ghost.transform.position.ToString("0.000") + " yaw " + ghost.transform.eulerAngles.y.ToString("0.0")
                 + " point " + (ghostPointTransform == null ? "-" : ghostPointTransform.position.ToString("0.000"))
                 + " | target pos " + target.transform.position.ToString("0.000") + " yaw " + target.transform.eulerAngles.y.ToString("0.0")
@@ -335,5 +361,88 @@ internal static partial class ModTestHooks
 
         rows.Sort(StringComparer.OrdinalIgnoreCase);
         return string.Join(" ; ", rows.ToArray());
+    }
+
+    /// <summary>
+    /// Checks that the chests placed by the hooks form the neat layout the player expects (#0 base, #1 #2 stacked on it, #3 #4 side by side, #5 front to front, #6 #7 a row behind):
+    /// stacked ones above each other, side by side ones at the same height and depth, row ones at the same height and across, and every piece resting on something
+    /// (a ray down from its underside meets a collider within 0.25 m). Returns "layout ok" or the list of faults.
+    /// </summary>
+    [TestHook("chestsnapping.placedLayout")]
+    private static string PlacedLayout()
+    {
+        const float tol = 0.06f;
+        if (Placed.Count < 8) return "need 8 placed chests, have " + Placed.Count;
+
+        var faults = new System.Collections.Generic.List<string>();
+        Vector3 b = Placed[0].transform.position;
+        for (int i = 1; i <= 2; i++)
+        {
+            Vector3 d = Placed[i].transform.position - Placed[i - 1].transform.position;
+            if (Mathf.Abs(d.x) > tol || Mathf.Abs(d.z) > tol || d.y < 0.1f) faults.Add("#" + i + " is not stacked straight on #" + (i - 1) + " (offset " + d.ToString("0.00") + ")");
+        }
+
+        foreach (int i in new[] { 3, 4, 5, 6, 7 })
+            if (Mathf.Abs(Placed[i].transform.position.y - b.y) > tol) faults.Add("#" + i + " is " + (Placed[i].transform.position.y - b.y).ToString("0.00") + " m off the height of #0");
+        foreach (int i in new[] { 3, 4 })
+            if (Mathf.Abs(Placed[i].transform.position.z - b.z) > tol) faults.Add("#" + i + " is " + (Placed[i].transform.position.z - b.z).ToString("0.00") + " m out of line (depth) with #0");
+        foreach (int i in new[] { 6, 7 })
+            if (Mathf.Abs(Placed[i].transform.position.x - b.x) > tol) faults.Add("#" + i + " is " + (Placed[i].transform.position.x - b.x).ToString("0.00") + " m out of line (across) with #0");
+
+        for (int i = 0; i < Placed.Count; i++)
+        {
+            Bounds box = default(Bounds);
+            bool any = false;
+            foreach (Collider c in Placed[i].GetComponentsInChildren<Collider>())
+            {
+                if (c.isTrigger) continue;
+                if (!any) { box = c.bounds; any = true; } else box.Encapsulate(c.bounds);
+            }
+
+            if (!any) continue;
+            Vector3 from = new Vector3(box.center.x, box.min.y + 0.05f, box.center.z);
+            bool grounded = false;
+            foreach (RaycastHit h in Physics.RaycastAll(from, Vector3.down, 0.3f))
+                if (!h.collider.transform.IsChildOf(Placed[i].transform)) { grounded = true; break; }
+            if (!grounded) faults.Add("#" + i + " floats: nothing under it within 0.25 m");
+        }
+
+        string r = faults.Count == 0 ? "layout ok" : "layout faults: " + string.Join("; ", faults.ToArray());
+        ModLog.Verbose("ModTestHooks: placedLayout " + r);
+        return r;
+    }
+
+    /// <summary>Snap points of a ghost (made like the game makes it: no ZNetView init) against a normally placed copy of the same prefab: "ghost p3 (..) / placed p3 (..) | boxes". They must be identical, or chests snap off by the difference.</summary>
+    [TestHook("chestsnapping.pointCompare")]
+    private static string PointCompare(string prefab)
+    {
+        GameObject source = Prefab(prefab);
+        GameObject ghost;
+        ZNetView.m_forceDisableInit = true;
+        try { ghost = UnityEngine.Object.Instantiate(source, new Vector3(0f, -500f, 0f), Quaternion.identity); }
+        finally { ZNetView.m_forceDisableInit = false; }
+        GameObject placed = UnityEngine.Object.Instantiate(source, new Vector3(0f, -520f, 0f), Quaternion.identity);
+        string r = prefab + ":";
+        foreach (int i in new[] { 0, 3, 6, 9 })
+        {
+            Transform g = FindPoint(ghost.transform, i), p = FindPoint(placed.transform, i);
+            r += " p" + i + " ghost " + (g == null ? "none" : g.localPosition.ToString("0.000")) + " placed " + (p == null ? "none" : p.localPosition.ToString("0.000")) + " |";
+        }
+
+        Bounds gb, pb;
+        ChestSnapPoints.TryGetLocalBounds(ghost.transform, out gb);
+        ChestSnapPoints.TryGetLocalBounds(placed.transform, out pb);
+        r += " box ghost " + gb.center.ToString("0.000") + " " + gb.size.ToString("0.000") + " placed " + pb.center.ToString("0.000") + " " + pb.size.ToString("0.000");
+        var list = new System.Collections.Generic.List<Transform>();
+        ghost.GetComponent<Piece>().GetSnapPoints(list);
+        r += " | list(" + list.Count + "):";
+        for (int i = 0; i < list.Count; i++) r += " " + i + "=" + list[i].name + list[i].localPosition.ToString("0.00");
+        r += " | colliders:";
+        foreach (Collider c in placed.GetComponentsInChildren<Collider>(true)) r += " " + c.name + "/" + LayerMask.LayerToName(c.gameObject.layer) + (c.enabled ? "" : "(off)") + (c.isTrigger ? "(trig)" : "");
+        r += " | root layer " + LayerMask.LayerToName(placed.layer);
+        r += " | scale " + ghost.transform.localScale.ToString("0.000");
+        UnityEngine.Object.Destroy(ghost);
+        UnityEngine.Object.Destroy(placed);
+        return r;
     }
 }

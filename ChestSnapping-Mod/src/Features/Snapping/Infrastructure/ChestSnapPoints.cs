@@ -314,6 +314,8 @@ internal static class ChestSnapPoints
         Bounds solid = default(Bounds);
         bool found = false;
         int layer = root.gameObject.layer;
+        int snapMask = LayerMask.GetMask("piece", "piece_nonsolid");
+        bool onSnapLayer = false;
         Matrix4x4 worldToRoot = root.worldToLocalMatrix;
         foreach (Collider col in root.GetComponentsInChildren<Collider>(true))
         {
@@ -321,6 +323,7 @@ internal static class ChestSnapPoints
             Vector3 center, size;
             if (!TryGetColliderBox(col, out center, out size)) continue;
             if (!found) layer = col.gameObject.layer;
+            if ((snapMask & (1 << col.gameObject.layer)) != 0) onSnapLayer = true;
             Encapsulate(ref solid, ref found, worldToRoot * col.transform.localToWorldMatrix, center, size);
         }
 
@@ -333,7 +336,11 @@ internal static class ChestSnapPoints
         const float tolerance = 0.08f;
         bool sticksOut = all.max.x > solid.max.x + tolerance || all.max.y > solid.max.y + tolerance || all.max.z > solid.max.z + tolerance
             || all.min.x < solid.min.x - tolerance || all.min.y < solid.min.y - tolerance || all.min.z < solid.min.z - tolerance;
-        if (!sticksOut) return;
+        if (!sticksOut && onSnapLayer) return;
+
+        // The game only finds snap points of pieces whose colliders are on the piece layers (Piece.GetSnapPoints). Pots keep their colliders on the
+        // default layer, so their points were never found and the ghost hung 0.2 m in the air; the box carries the piece layer for them.
+        if (!onSnapLayer) layer = LayerMask.NameToLayer("piece");
 
         var go = new GameObject(VisibleBoxName);
         go.layer = layer;
