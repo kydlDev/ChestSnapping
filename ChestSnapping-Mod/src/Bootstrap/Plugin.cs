@@ -27,7 +27,7 @@ public class Plugin : BaseUnityPlugin
     // ModVersion = manifest.json version_number = newest CHANGELOG heading (tests check it).
     public const string ModGuid = "com.kydldev.ChestSnapping";
     public const string ModName = "ChestSnapping";
-    public const string ModVersion = "2.0.0";
+    public const string ModVersion = "2.1.0";
 
     private Harmony _harmony;
     private ConfigReloader _cfgWatcher;

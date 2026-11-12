@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.0.0
+## 2.1.0
 - New: chests can be placed on top of (or against) other chests without planks or floors. Vanilla refuses it because a chest does not count as a building support; the new `[Stacking] Enable` switch (also needs `[General] EnableAll`) lets a chest aimed at a chest pass that one check. Chests never become real supports, so building stability is unchanged. Checked with the TestLab suite (the game's own placement test says Valid for a chest on a chest, Invalid with the switch off).
 - Fix: a chest placed on a chest was destroyed by the game about 30 seconds later (vanilla gives no building support from a chest). A chest under another chest now counts as support in the game's support check; chests still support nothing else.
 - New `[Prefabs] SnapRange` (default 1 m, vanilla 0.5): how close a snap point of the chest you hold has to be to another snap point before it locks on, so chests find their snap point sooner.
