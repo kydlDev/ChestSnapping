@@ -205,7 +205,7 @@ internal static partial class ModTestHooks
             if (go == null) continue;
             alive++;
             WearNTear wear = go.GetComponent<WearNTear>();
-            if (wear != null && Traverse.Create(wear).Method("HaveSupport").GetValue<bool>()) supported++;
+            if (wear == null || Traverse.Create(wear).Method("HaveSupport").GetValue<bool>()) supported++;   // no WearNTear: the support check cannot destroy it
         }
 
         string r = Placed.Count + " placed, " + alive + " alive, " + supported + " supported";
@@ -318,5 +318,22 @@ internal static partial class ModTestHooks
 
         Physics.SyncTransforms();
         return "levelled " + pieces.Count;
+    }
+
+    /// <summary>Every buildable container prefab of the game with the snap-point source and the measured box (colliders+visible meshes): "name=source size". Used to see which storage pieces ChestSnapping knows.</summary>
+    [TestHook("chestsnapping.containerList")]
+    private static string ContainerList()
+    {
+        var rows = new System.Collections.Generic.List<string>();
+        foreach (GameObject prefab in ZNetScene.instance.m_prefabs)
+        {
+            if (prefab == null || prefab.GetComponent<Piece>() == null || prefab.GetComponent<Container>() == null) continue;
+            Bounds b;
+            string size = ChestSnapPoints.TryGetLocalBounds(prefab.transform, out b) ? b.size.ToString("0.00") : "no box";
+            rows.Add(prefab.name + "=" + (ChestSnapPoints.Source(prefab) ?? "none") + " " + size + (ChestSnapPoints.IsPlainContainer(prefab) ? "" : " [ship/cart]"));
+        }
+
+        rows.Sort(StringComparer.OrdinalIgnoreCase);
+        return string.Join(" ; ", rows.ToArray());
     }
 }

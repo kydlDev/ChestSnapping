@@ -14,6 +14,17 @@ internal static class PrefabSets
         "piece_chest_private",    // Private chest
         "piece_chest_blackmetal", // Blackmetal chest
         "piece_chest_grausten",   // Grausten chest
+        "piece_chest_warderobe",  // Wardrobe
+        "piece_chest_barrel",     // Barrel
+        "piece_pot1",             // Pot 1 (and its cracked / red variants)
+        "piece_pot1_cracked",
+        "piece_pot1_red",
+        "piece_pot2",             // Pot 2
+        "piece_pot2_cracked",
+        "piece_pot2_red",
+        "piece_pot3",             // Pot 3
+        "piece_pot3_cracked",
+        "piece_pot3_red",
     };
 
     /// <summary>Default + extra prefabs.</summary>

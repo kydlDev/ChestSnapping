@@ -32,7 +32,7 @@ Vanilla only lets you put a chest on top of another chest when a plank or floor 
 
 To let your own storage chest snap and stack, call `ChestSnappingApi.RegisterChest("YourPrefabName")` (public static class in the ChestSnapping assembly, namespace `ChestSnapping`; `UnregisterChest`, `IsChest(GameObject)`, `IsStackingOn()` and `ApiVersion` are there too). No reference is needed: `Type.GetType("ChestSnapping.ChestSnappingApi, ChestSnapping")?.GetMethod("RegisterChest")?.Invoke(null, new object[] { "YourPrefabName" })`. Registering before ChestSnapping loads works. The player's `ExcludedPrefabs` and the `[Prefabs]` / `[Stacking]` switches still decide.
 
-Built-in chests: `piece_chest_wood`, `piece_chest`, `piece_chest_private`, `piece_chest_blackmetal`, `piece_chest_grausten`.
+Built-in chests: `piece_chest_wood`, `piece_chest`, `piece_chest_private`, `piece_chest_blackmetal`, `piece_chest_grausten`, the wardrobe (`piece_chest_warderobe`), the barrel (`piece_chest_barrel`) and the three pots (`piece_pot1`, `piece_pot2`, `piece_pot3`, with their cracked and red variants).
 
 ## Modded chests (or future vanilla chests)
 

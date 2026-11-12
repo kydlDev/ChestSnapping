@@ -2,22 +2,88 @@
   "name": "ChestSnapping",
   "description": "ChestSnapping: snap points on chests, excluded prefabs, saved adjustments, KY hub settings tab, chest-on-chest stacking, live feature switching (KydlCore D-084)",
   "requireMods": [
-    { "guid": "com.kydldev.ChestSnapping", "minVersion": "2.0.0" },
-    { "guid": "com.kydldev.KydlCore", "minVersion": "1.0.0" }
+    {
+      "guid": "com.kydldev.ChestSnapping",
+      "minVersion": "2.0.0"
+    },
+    {
+      "guid": "com.kydldev.KydlCore",
+      "minVersion": "1.0.0"
+    }
   ],
   "configOverrides": [
-    { "guid": "com.kydldev.ChestSnapping", "section": "General", "key": "EnableAll", "value": "true" },
-    { "guid": "com.kydldev.ChestSnapping", "section": "Prefabs", "key": "Enable", "value": "true" },
-    { "guid": "com.kydldev.ChestSnapping", "section": "Prefabs", "key": "ExtraPrefabs", "value": "" },
-    { "guid": "com.kydldev.ChestSnapping", "section": "Prefabs", "key": "ExcludedPrefabs", "value": "" },
-    { "guid": "com.kydldev.ChestSnapping", "section": "Prefabs", "key": "AutoDetectContainers", "value": "false" },
-    { "guid": "com.kydldev.ChestSnapping", "section": "Prefabs", "key": "SnapRange", "value": "1" },
-    { "guid": "com.kydldev.ChestSnapping", "section": "Prefabs", "key": "AlignRotation", "value": "true" },
-    { "guid": "com.kydldev.ChestSnapping", "section": "Prefabs", "key": "VisibleBounds", "value": "true" },
-    { "guid": "com.kydldev.ChestSnapping", "section": "Offsets", "key": "Enable", "value": "true" },
-    { "guid": "com.kydldev.ChestSnapping", "section": "Offsets", "key": "PrefabAdjustments", "value": "" },
-    { "guid": "com.kydldev.ChestSnapping", "section": "Stacking", "key": "Enable", "value": "true" },
-    { "guid": "com.kydldev.ChestSnapping", "section": "DebugLog", "key": "Enable", "value": "true" }
+    {
+      "guid": "com.kydldev.ChestSnapping",
+      "section": "General",
+      "key": "EnableAll",
+      "value": "true"
+    },
+    {
+      "guid": "com.kydldev.ChestSnapping",
+      "section": "Prefabs",
+      "key": "Enable",
+      "value": "true"
+    },
+    {
+      "guid": "com.kydldev.ChestSnapping",
+      "section": "Prefabs",
+      "key": "ExtraPrefabs",
+      "value": ""
+    },
+    {
+      "guid": "com.kydldev.ChestSnapping",
+      "section": "Prefabs",
+      "key": "ExcludedPrefabs",
+      "value": ""
+    },
+    {
+      "guid": "com.kydldev.ChestSnapping",
+      "section": "Prefabs",
+      "key": "AutoDetectContainers",
+      "value": "false"
+    },
+    {
+      "guid": "com.kydldev.ChestSnapping",
+      "section": "Prefabs",
+      "key": "SnapRange",
+      "value": "1"
+    },
+    {
+      "guid": "com.kydldev.ChestSnapping",
+      "section": "Prefabs",
+      "key": "AlignRotation",
+      "value": "true"
+    },
+    {
+      "guid": "com.kydldev.ChestSnapping",
+      "section": "Prefabs",
+      "key": "VisibleBounds",
+      "value": "true"
+    },
+    {
+      "guid": "com.kydldev.ChestSnapping",
+      "section": "Offsets",
+      "key": "Enable",
+      "value": "true"
+    },
+    {
+      "guid": "com.kydldev.ChestSnapping",
+      "section": "Offsets",
+      "key": "PrefabAdjustments",
+      "value": ""
+    },
+    {
+      "guid": "com.kydldev.ChestSnapping",
+      "section": "Stacking",
+      "key": "Enable",
+      "value": "true"
+    },
+    {
+      "guid": "com.kydldev.ChestSnapping",
+      "section": "DebugLog",
+      "key": "Enable",
+      "value": "true"
+    }
   ],
   "resetBetweenTests": true,
   "tests": [
@@ -36,6 +102,11 @@
     "chests-reinforced",
     "chests-private",
     "chests-blackmetal",
-    "chests-grausten"
+    "chests-grausten",
+    "chests-barrel",
+    "chests-warderobe",
+    "chests-pot1",
+    "chests-pot2",
+    "chests-pot3"
   ]
 }

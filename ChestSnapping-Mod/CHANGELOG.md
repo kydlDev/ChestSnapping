@@ -7,7 +7,7 @@
 - Fix: the side of a chest was refused as a "tilted surface" when you aimed at it, so a chest next to another chest (side by side, front to back) showed a red ghost. Aiming at a chest side is now accepted when you hold a chest.
 - Fix: chests that only touch along an edge or a corner showed a red ghost because the ghost was a few degrees off the placed chest. The chest you hold now takes the rotation of the chest it snaps to (the nearest quarter turn, so a turn you chose yourself is kept). New `[Prefabs] AlignRotation` (default on) switches it off.
 - Fix: the Grausten (ashlands) chest has a collider much smaller than the chest you see (the lid is not in it), so chests snapped into each other, stacked ones sank into the one below and a chest on top was destroyed. The snap box now also covers the closed, visible meshes (not the open lid), and a chest whose collider is smaller than its body gets one extra collider for the visible body. New `[Prefabs] VisibleBounds` (default on) switches this off.
-- New: the Grausten chest (`piece_chest_grausten`) is a built-in chest.
+- New: the Grausten chest, the wardrobe, the barrel and the three pots (with their cracked and red variants) are built-in: they get snap points and stack like the other chests.
 - New API for other mods: `ChestSnappingApi.RegisterChest(prefab)` makes their storage chests known (snap points and stacking). See the README.
 - Tested in game with the TestLab suite: for every chest type a stack of 3, 3 side by side, a row of 3 front to back and front to front, placed for real on wood floors on cleared ground (the game's support check runs; nothing is destroyed).
 - Breaking: ChestSnapping now needs the KydlCore mod (hard dependency). Install KydlCore as well.

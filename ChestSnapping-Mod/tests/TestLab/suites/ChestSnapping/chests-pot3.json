@@ -1,0 +1,31 @@
+{
+  "name": "chests-pot3",
+  "description": "piece_pot3: a stack of 3, 3 side by side (round, so no turned ghost), one front to front and a row of 3 front to back - every ghost Valid, nothing destroyed, the visible meshes do not overlap.",
+  "timeout": 90,
+  "steps": [
+    {
+      "do": "hook",
+      "name": "chestsnapping.arena",
+      "contains": "arena at",
+      "label": "start on the arena spot"
+    },
+    {
+      "do": "use",
+      "block": "clearSite"
+    },
+    {
+      "do": "use",
+      "block": "chestBattery",
+      "args": {
+        "prefab": "piece_pot3",
+        "turn": 0
+      }
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "ChestSnapping"
+    }
+  ]
+}
