@@ -120,3 +120,11 @@ Vanilla snapping (`Player.FindClosestSnapPoints` / `Piece.GetSnapPoints`) looks 
 - Prefab bounds come from non-trigger colliders (mesh bounds as a fallback). A chest with an oversized invisible collider gets oversized snap points. Use `chestsnap_grow` to fix that.
 - Vanilla only snaps the ghost's points to *other pieces'* snap points, not to terrain.
 - Debug spheres from `chestsnap_show` are depth-tested, so parts of them can be hidden inside the chest model.
+
+---
+
+![KydlDev](https://raw.githubusercontent.com/kydlDev/.github/main/branding/KydlDev-banner-960x240.png)
+
+## Get help and stay in touch
+Questions, bug reports, ideas or mod requests? Come say hi in the **KydlDev Discord**: **https://discord.gg/tX2CcTNC4W**
+Everyone is welcome, and it is the quickest way to reach me. Source code and issues: https://github.com/kydlDev
