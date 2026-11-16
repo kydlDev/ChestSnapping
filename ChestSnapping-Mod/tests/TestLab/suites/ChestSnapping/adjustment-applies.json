@@ -7,9 +7,9 @@
     { "do": "hook", "name": "chestsnapping.adjustDeltaY", "args": { "prefab": "piece_chest_wood" }, "expect": 0, "label": "no adjustment at start" },
     { "do": "setConfig", "values": { "Offsets/PrefabAdjustments": "piece_chest_wood: shift=0,0.5,0" } },
     { "do": "wait", "until": { "check": "hook", "name": "chestsnapping.adjustDeltaY", "args": { "prefab": "piece_chest_wood" }, "expect": 0.5 }, "timeout": 5 },
-    { "do": "setConfig", "values": { "Offsets/Enable": false } },
+    { "do": "setConfig", "values": { "General/Enable Offsets": false } },
     { "do": "wait", "until": { "check": "hook", "name": "chestsnapping.adjustDeltaY", "args": { "prefab": "piece_chest_wood" }, "expect": 0 }, "timeout": 5 },
-    { "do": "setConfig", "values": { "Offsets/Enable": true } },
+    { "do": "setConfig", "values": { "General/Enable Offsets": true } },
     { "do": "wait", "until": { "check": "hook", "name": "chestsnapping.adjustDeltaY", "args": { "prefab": "piece_chest_wood" }, "expect": 0.5 }, "timeout": 5 },
     { "do": "setConfig", "values": { "Offsets/PrefabAdjustments": "" } },
     { "do": "wait", "until": { "check": "hook", "name": "chestsnapping.adjustDeltaY", "args": { "prefab": "piece_chest_wood" }, "expect": 0 }, "timeout": 5 }

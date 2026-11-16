@@ -4,24 +4,24 @@
   "requireMods": [
     {
       "guid": "com.kydldev.ChestSnapping",
-      "minVersion": "2.1.0"
+      "minVersion": "2.1.1"
     },
     {
       "guid": "com.kydldev.KydlCore",
-      "minVersion": "1.0.0"
+      "minVersion": "1.1.1"
     }
   ],
   "configOverrides": [
     {
       "guid": "com.kydldev.ChestSnapping",
       "section": "General",
-      "key": "EnableAll",
+      "key": "Enable mod",
       "value": "true"
     },
     {
       "guid": "com.kydldev.ChestSnapping",
-      "section": "Prefabs",
-      "key": "Enable",
+      "section": "General",
+      "key": "Enable Prefabs",
       "value": "true"
     },
     {
@@ -62,8 +62,8 @@
     },
     {
       "guid": "com.kydldev.ChestSnapping",
-      "section": "Offsets",
-      "key": "Enable",
+      "section": "General",
+      "key": "Enable Offsets",
       "value": "true"
     },
     {
@@ -74,8 +74,8 @@
     },
     {
       "guid": "com.kydldev.ChestSnapping",
-      "section": "Stacking",
-      "key": "Enable",
+      "section": "General",
+      "key": "Enable Stacking",
       "value": "true"
     },
     {

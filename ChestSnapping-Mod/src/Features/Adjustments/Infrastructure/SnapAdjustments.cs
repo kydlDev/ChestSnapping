@@ -44,7 +44,7 @@ internal static class SnapAdjustments
     private static Dictionary<string, PrefabAdjust> _map =
         new Dictionary<string, PrefabAdjust>(StringComparer.OrdinalIgnoreCase);
 
-    /// <summary>The adjustment that is applied to chests: the saved one, or null when [Offsets] Enable (or EnableAll) is off.</summary>
+    /// <summary>The adjustment that is applied to chests: the saved one, or null when [Offsets] Enable (or EnableMod) is off.</summary>
     internal static PrefabAdjust Active(string prefab)
     {
         return ModSettings.OffsetsOn ? Get(prefab) : null;

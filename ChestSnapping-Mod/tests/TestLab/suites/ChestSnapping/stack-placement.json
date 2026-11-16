@@ -9,7 +9,7 @@
     { "do": "wait", "seconds": 2 },
     { "do": "hook", "name": "chestsnapping.placementStatus", "args": { "prefab": "piece_chest_wood", "aim": "piece_chest_wood" }, "expect": "Valid", "label": "stacking on: chest aimed at a chest is valid" },
     { "do": "hook", "name": "chestsnapping.supports", "args": { "prefab": "piece_chest_wood" }, "expect": false, "label": "the prefab chest is no support afterwards" },
-    { "do": "setConfig", "values": { "Stacking/Enable": false } },
+    { "do": "setConfig", "values": { "General/Enable Stacking": false } },
     { "do": "wait", "until": { "check": "hook", "name": "chestsnapping.featureRunning", "args": { "id": "stacking" }, "expect": false }, "timeout": 5 },
     { "do": "hook", "name": "chestsnapping.placementStatus", "args": { "prefab": "piece_chest_wood", "aim": "piece_chest_wood" }, "expect": "Invalid", "label": "stacking off: vanilla refuses (this is the old behaviour)" }
   ],

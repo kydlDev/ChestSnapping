@@ -11,7 +11,7 @@
     { "do": "wait", "seconds": 10 },
     { "do": "hook", "name": "chestsnapping.stackedExists", "expect": true, "label": "the stacked chest is still there after 10 s of support checks" },
     { "do": "hook", "name": "chestsnapping.stackedSupported", "expect": true, "label": "and it has building support" },
-    { "do": "setConfig", "values": { "Stacking/Enable": false } },
+    { "do": "setConfig", "values": { "General/Enable Stacking": false } },
     { "do": "wait", "until": { "check": "hook", "name": "chestsnapping.featureRunning", "args": { "id": "stacking" }, "expect": false }, "timeout": 5 },
     { "do": "hook", "name": "chestsnapping.stackNew", "args": { "prefab": "piece_chest_wood", "onPrefab": "piece_chest_wood", "index": 1 }, "expect": "placed", "label": "stacking off: chest placed on chest B (control)" },
     { "do": "wait", "until": { "check": "hook", "name": "chestsnapping.stackedExists", "expect": false }, "timeout": 40 }

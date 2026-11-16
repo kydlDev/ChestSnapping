@@ -3,7 +3,7 @@ using KydlCore.Core;
 
 namespace ChestSnapping;
 
-/// <summary>Snap points on chests. Gate: EnableAll and [Prefabs] Enable. The pieces are updated by Plugin.Update after a switch changes.</summary>
+/// <summary>Snap points on chests. Gate: EnableMod and [Prefabs] Enable. The pieces are updated by Plugin.Update after a switch changes.</summary>
 internal sealed class SnappingFeature : IFeature
 {
     internal const string FeatureId = "snapping";

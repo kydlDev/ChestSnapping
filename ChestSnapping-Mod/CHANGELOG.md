@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.1.1
+
+- Changed: needs KydlCore 1.1.1 or newer (the KY hub shows every settings category of the mod as its own tab).
+- Changed: all the **Enable** switches are now together in `[General]` and have new names: `Enable mod` (was `EnableAll`) and `Enable Prefabs`, `Enable Offsets`, `Enable Stacking` (each was `Enable` in its own section). The values you had set are taken over; the old entries are removed from your config file.
+- Changed: the console commands exist only when the developer's own KydlTools mod is loaded in that world; players do not get any console command from this mod (use the config file).
+
 ## 2.1.0
 - New: chests can be placed on top of (or against) other chests without planks or floors. Vanilla refuses it because a chest does not count as a building support; the new `[Stacking] Enable` switch (also needs `[General] EnableAll`) lets a chest aimed at a chest pass that one check. Chests never become real supports, so building stability is unchanged. Checked with the TestLab suite (the game's own placement test says Valid for a chest on a chest, Invalid with the switch off).
 - Fix: a chest placed on a chest was destroyed by the game about 30 seconds later (vanilla gives no building support from a chest). A chest under another chest now counts as support in the game's support check; chests still support nothing else.

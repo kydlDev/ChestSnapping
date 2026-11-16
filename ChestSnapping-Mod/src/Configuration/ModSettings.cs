@@ -9,7 +9,7 @@ namespace ChestSnapping;
 internal static class ModSettings
 {
     // [General]
-    public static ConfigEntry<bool> EnableAll;
+    public static ConfigEntry<bool> EnableMod;
 
     // [Prefabs]
     public static ConfigEntry<bool> PrefabsEnable;
@@ -30,26 +30,46 @@ internal static class ModSettings
     // [DebugLog]
     public static ConfigEntry<bool> DebugLog;
 
-    /// <summary>Is the mod switched on ([General] EnableAll)? Off means inert: no snap points on any chest.</summary>
-    public static bool On { get { return EnableAll == null || EnableAll.Value; } }
+    /// <summary>Is the mod switched on ([General] Enable mod)? Off means inert: no snap points on any chest.</summary>
+    public static bool On { get { return EnableMod == null || EnableMod.Value; } }
 
-    /// <summary>Do chests get snap points? EnableAll and [Prefabs] Enable.</summary>
+    /// <summary>Do chests get snap points? EnableMod and [Prefabs] Enable.</summary>
     public static bool PrefabsOn { get { return Functions.IsOn(On, PrefabsEnable == null || PrefabsEnable.Value); } }
 
-    /// <summary>Are the saved point adjustments applied? EnableAll and [Offsets] Enable.</summary>
+    /// <summary>Are the saved point adjustments applied? EnableMod and [Offsets] Enable.</summary>
     public static bool OffsetsOn { get { return Functions.IsOn(On, OffsetsEnable == null || OffsetsEnable.Value); } }
 
-    /// <summary>Can a chest be placed on another chest without planks? EnableAll and [Stacking] Enable.</summary>
+    /// <summary>Can a chest be placed on another chest without planks? EnableMod and [Stacking] Enable.</summary>
     public static bool StackingOn { get { return Functions.IsOn(On, StackingEnable == null || StackingEnable.Value); } }
+
+    /// The value the player had in an entry that moved (still in the file as an orphan before DropRemoved deletes it): the first of the
+    /// given (section, key, section, key, ...) pairs that holds a bool; true when there is none.
+    private static bool Old(ConfigFile c, params string[] sectionAndKey)
+    {
+        // OrphanedEntries is not a public member of every BepInEx 5 build (ConfigTools.DropRemoved reaches it the same way)
+        System.Reflection.PropertyInfo orphans = typeof(ConfigFile).GetProperty("OrphanedEntries", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
+        var dict = orphans != null ? orphans.GetValue(c, null) as System.Collections.IDictionary : null;
+        for (int i = 0; dict != null && i + 1 < sectionAndKey.Length; i += 2)
+        {
+            var def = new ConfigDefinition(sectionAndKey[i], sectionAndKey[i + 1]);
+            bool b;
+            if (dict.Contains(def) && bool.TryParse((dict[def] as string ?? "").Trim(), out b))
+            {
+                return b;
+            }
+        }
+
+        return true;
+    }
 
     /// <summary>Binds every entry. Called once, first thing after the log is ready.</summary>
     /// <param name="config">The plugin's config file.</param>
     internal static void Bind(ConfigFile config)
     {
-        EnableAll = config.Bind("General", "EnableAll", true,
+        EnableMod = config.Bind("General", "Enable mod", Old(config, "General", "EnableAll"),
             "Switches the whole mod on or off while playing. Off removes the snap points from every chest.");
 
-        PrefabsEnable = config.Bind("Prefabs", "Enable", true,
+        PrefabsEnable = config.Bind("General", "Enable Prefabs", Old(config, "Prefabs", "Enable"),
             "Give chests snap points so they take part in Valheim's snap system (Q / E while placing). Off removes the snap points.");
 
         ExtraPrefabs = config.Bind("Prefabs", "ExtraPrefabs", "",
@@ -81,7 +101,7 @@ internal static class ModSettings
             "Measure the chest box from its colliders AND its closed, visible meshes (not the open lid), because some chests (for example the Grausten chest) have a collider " +
             "much smaller than what you see, so chests overlapped. Off: colliders only, like version 1.");
 
-        OffsetsEnable = config.Bind("Offsets", "Enable", true,
+        OffsetsEnable = config.Bind("General", "Enable Offsets", Old(config, "Offsets", "Enable"),
             "Apply the saved per-prefab adjustments (PrefabAdjustments) to where the snap points sit. Off uses the measured chest box as it is.");
 
         Adjustments = config.Bind("Offsets", "PrefabAdjustments", "",
@@ -95,7 +115,7 @@ internal static class ModSettings
             "pN adds an offset to a single point, N = 1-14 in Q/E cycling order. " +
             "Example: MyMod_Crate: shift=0,0.05,0 grow=-0.02,0,-0.02 p5=0,0.1,0");
 
-        StackingEnable = config.Bind("Stacking", "Enable", true,
+        StackingEnable = config.Bind("General", "Enable Stacking", Old(config, "Stacking", "Enable"),
             "Lets you place a chest on top of (or next to) another chest without a plank or floor in between. " +
             "Vanilla refuses it because chests do not count as a building support. Works for the chests of [Prefabs] (built-in, ExtraPrefabs, auto-detected). " +
             "Off: vanilla behaviour.");

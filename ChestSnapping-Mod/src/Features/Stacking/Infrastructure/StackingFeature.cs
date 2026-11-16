@@ -3,7 +3,7 @@ using KydlCore.Core;
 
 namespace ChestSnapping;
 
-/// <summary>Chests can be placed on other chests without planks or floors. Gate: EnableAll and [Stacking] Enable. The work is done by StackingPatch.</summary>
+/// <summary>Chests can be placed on other chests without planks or floors. Gate: EnableMod and [Stacking] Enable. The work is done by StackingPatch.</summary>
 internal sealed class StackingFeature : IFeature
 {
     internal const string FeatureId = "stacking";

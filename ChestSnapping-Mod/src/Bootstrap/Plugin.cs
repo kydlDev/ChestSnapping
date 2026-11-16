@@ -17,7 +17,7 @@ namespace ChestSnapping;
 /// </summary>
 [BepInPlugin(ModGuid, ModName, ModVersion)]
 [BepInDependency(Jotunn.Main.ModGuid)]
-[BepInDependency(KydlCore.Bootstrap.Plugin.ModGuid, "1.0.0")]     // the KY hub (manifest: KydlDev-KydlCore-1.0.0, same version)
+[BepInDependency(KydlCore.Bootstrap.Plugin.ModGuid, "1.1.1")]     // the KY hub (manifest: KydlDev-KydlCore-1.1.1, same version)
 // Purely client-side: placed pieces are synced by vanilla, snap points are local helpers. A player without the mod can join;
 // when both sides have it the version must match.
 [NetworkCompatibility(CompatibilityLevel.VersionCheckOnly, VersionStrictness.Patch)]
@@ -27,7 +27,8 @@ public class Plugin : BaseUnityPlugin
     // ModVersion = manifest.json version_number = newest CHANGELOG heading (tests check it).
     public const string ModGuid = "com.kydldev.ChestSnapping";
     public const string ModName = "ChestSnapping";
-    public const string ModVersion = "2.1.0";
+    private const string KydlToolsGuid = "com.kydldev.KydlTools";
+    public const string ModVersion = "2.1.1";
 
     private Harmony _harmony;
     private ConfigReloader _cfgWatcher;
@@ -51,19 +52,32 @@ public class Plugin : BaseUnityPlugin
         Config.SettingChanged += (s, e) => _refreshQueued = true;
         ModLog.Verbose("Plugin: ModInstaller " + (installed ? "installed" : "reported a problem"));
 
-        CommandManager.Instance.AddConsoleCommand(new ListContainersCommand());
-        CommandManager.Instance.AddConsoleCommand(new AddPrefabCommand());
-        CommandManager.Instance.AddConsoleCommand(new RemovePrefabCommand());
-        CommandManager.Instance.AddConsoleCommand(new ShiftCommand());
-        CommandManager.Instance.AddConsoleCommand(new GrowCommand());
-        CommandManager.Instance.AddConsoleCommand(new PointCommand());
-        CommandManager.Instance.AddConsoleCommand(new ResetCommand());
-        CommandManager.Instance.AddConsoleCommand(new InfoCommand());
-        CommandManager.Instance.AddConsoleCommand(new ShowCommand());
-
         _harmony = new Harmony(ModGuid);
         bool patched = PatchInstaller.Apply(_harmony, Assembly.GetExecutingAssembly());
         ModLog.Info(ModName + " ready" + (patched ? "" : " (patching failed, see the log)"));
+    }
+
+    // user, 2026-11-16 (PROJECT_RULES 33): the console commands exist only while the developer's KydlTools is loaded.
+    // Checked in Start (after every plugin has loaded), NOT with a BepInDependency: KydlTools soft-depends on this mod, so a dependency back is a "Cyclic Dependency" and BepInEx loads nothing.
+    private void Start()
+    {
+        if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey(KydlToolsGuid))
+        {
+            CommandManager.Instance.AddConsoleCommand(new ListContainersCommand());
+            CommandManager.Instance.AddConsoleCommand(new AddPrefabCommand());
+            CommandManager.Instance.AddConsoleCommand(new RemovePrefabCommand());
+            CommandManager.Instance.AddConsoleCommand(new ShiftCommand());
+            CommandManager.Instance.AddConsoleCommand(new GrowCommand());
+            CommandManager.Instance.AddConsoleCommand(new PointCommand());
+            CommandManager.Instance.AddConsoleCommand(new ResetCommand());
+            CommandManager.Instance.AddConsoleCommand(new InfoCommand());
+            CommandManager.Instance.AddConsoleCommand(new ShowCommand());
+            ModLog.Verbose("Plugin: KydlTools is loaded - console commands registered");
+        }
+        else
+        {
+            ModLog.Verbose("Plugin: KydlTools is not loaded - no console commands");
+        }
     }
 
     private void Update()

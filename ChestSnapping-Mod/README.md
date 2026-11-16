@@ -40,6 +40,8 @@ No recompile needed. Use either way:
 
 **Console (F5)**
 
+_The console commands below exist only while the developer's KydlTools mod is loaded in that world. Without it, use the config file (next section)._
+
 | Command | What it does |
 |---------|--------------|
 | `chestsnap_list [filter]` | Lists every buildable container prefab and whether it has snap points. |
@@ -57,6 +59,8 @@ Prefab names are not case-sensitive.
 ## Adjusting the snap points
 
 Some modded chests have an oversized invisible collider or an off-center model, which puts the snap points in the wrong place. Each chest can be tuned separately. All distances are in meters along the chest's own axes (+X right, +Y up, +Z front). Both `0.05` and `0,05` are accepted in the console.
+
+_The console commands below exist only while the developer's KydlTools mod is loaded in that world. Without it, use the config file (next section)._
 
 | Command | What it does |
 |---------|--------------|
@@ -94,12 +98,12 @@ Numbers always use `.` as the decimal separator in the config file, whatever lan
 
 | Section | Setting | Default | What it does |
 |---------|---------|---------|--------------|
-| General | EnableAll | true | Switches the whole mod on / off while playing |
-| Prefabs | Enable | true | Chests get snap points (off removes them) |
+| General | Enable mod | true | Switches the whole mod on / off while playing |
+| General | Enable Prefabs | true | Chests get snap points (off removes them) |
 | Prefabs | ExtraPrefabs | (empty) | Extra chest prefab names that get snap points |
 | Prefabs | ExcludedPrefabs | (empty) | Prefab names that never get snap points |
 | Prefabs | AutoDetectContainers | false | Every buildable container gets snap points |
-| Offsets | Enable | true | Apply the saved adjustments below |
+| General | Enable Offsets | true | Apply the saved adjustments below |
 | Offsets | PrefabAdjustments | (empty) | Per-prefab shift / grow / point offsets (the console commands write it) |
 | DebugLog | Enable | false | Detailed lines in the BepInEx log for bug reports |
 

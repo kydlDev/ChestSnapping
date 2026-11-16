@@ -3,7 +3,7 @@ using KydlCore.Core;
 
 namespace ChestSnapping;
 
-/// <summary>Applies the saved per-prefab point adjustments. Gate: EnableAll and [Offsets] Enable.</summary>
+/// <summary>Applies the saved per-prefab point adjustments. Gate: EnableMod and [Offsets] Enable.</summary>
 internal sealed class AdjustmentsFeature : IFeature
 {
     internal const string FeatureId = "adjustments";

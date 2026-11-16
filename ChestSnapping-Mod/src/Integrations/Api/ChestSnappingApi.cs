@@ -66,7 +66,7 @@ public static class ChestSnappingApi
         return chest != null && ChestSnapPoints.IsChest(chest);
     }
 
-    /// <summary>Is stacking chests on chests on right now ([General] EnableAll and [Stacking] Enable)?</summary>
+    /// <summary>Is stacking chests on chests on right now ([General] Enable mod and [Stacking] Enable)?</summary>
     /// <returns>True when stacking is active.</returns>
     public static bool IsStackingOn()
     {
