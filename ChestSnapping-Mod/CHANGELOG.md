@@ -6,6 +6,14 @@
 - Changed: all the **Enable** switches are now together in `[General]` and have new names: `Enable mod` (was `EnableAll`) and `Enable Prefabs`, `Enable Offsets`, `Enable Stacking` (each was `Enable` in its own section). The values you had set are taken over; the old entries are removed from your config file.
 - Changed: the console commands exist only when the developer's own KydlTools mod is loaded in that world; players do not get any console command from this mod (use the config file).
 
+### Testing
+- Unit tests: 40 passed. Integration tests: 37 passed.
+- Property-based tests (FsCheck, included in the unit tests above): 8 property checks with generated inputs.
+- Coverage of the testable code: 100%. Mutation testing (Stryker): 100% of the mutants are caught by the tests.
+- Performance benchmarks (BenchmarkDotNet): 7.
+- Static analysis (SonarQube): no Medium or High issues.
+- In game with DrakesTestLab: the full suite of 21 tests per run, run 3 times in a row on the release build, all green (the release requirement).
+
 ## 2.1.0
 - New: chests can be placed on top of (or against) other chests without planks or floors. Vanilla refuses it because a chest does not count as a building support; the new `[Stacking] Enable` switch (also needs `[General] EnableAll`) lets a chest aimed at a chest pass that one check. Chests never become real supports, so building stability is unchanged. Checked with the TestLab suite (the game's own placement test says Valid for a chest on a chest, Invalid with the switch off).
 - Fix: a chest placed on a chest was destroyed by the game about 30 seconds later (vanilla gives no building support from a chest). A chest under another chest now counts as support in the game's support check; chests still support nothing else.
