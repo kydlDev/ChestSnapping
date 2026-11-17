@@ -3,11 +3,12 @@
 ## 2.1.1
 
 - Changed: needs KydlCore 1.1.1 or newer (the KY hub shows every settings category of the mod as its own tab).
-- Changed: all the **Enable** switches are now together in `[General]` and have new names: `Enable mod` (was `EnableAll`) and `Enable Prefabs`, `Enable Offsets`, `Enable Stacking` (each was `Enable` in its own section). The values you had set are taken over; the old entries are removed from your config file.
+- Changed: all the **Enable** switches are now together in `[General]` and have new names: `Enable Mod` (was `EnableAll`) and `Enable Prefabs`, `Enable Offsets`, `Enable Stacking` (each was `Enable` in its own section). The values you had set are taken over; the old entries are removed from your config file.
+- Changed: `Enable Mod` is now the first setting of `[General]`, in the F1 menu and in the F6 hub (your value is taken over).
 - Changed: the console commands exist only when the developer's own KydlTools mod is loaded in that world; players do not get any console command from this mod (use the config file).
 
 ### Testing
-- Unit tests: 40 passed. Integration tests: 37 passed.
+- Unit tests: 40 passed. Integration tests: 38 passed.
 - Property-based tests (FsCheck, included in the unit tests above): 8 property checks with generated inputs.
 - Coverage of the testable code: 100%. Mutation testing (Stryker): 100% of the mutants are caught by the tests.
 - Performance benchmarks (BenchmarkDotNet): 7.

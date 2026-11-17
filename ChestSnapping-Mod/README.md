@@ -98,7 +98,7 @@ Numbers always use `.` as the decimal separator in the config file, whatever lan
 
 | Section | Setting | Default | What it does |
 |---------|---------|---------|--------------|
-| General | Enable mod | true | Switches the whole mod on / off while playing |
+| General | Enable Mod | true | Switches the whole mod on / off while playing |
 | General | Enable Prefabs | true | Chests get snap points (off removes them) |
 | Prefabs | ExtraPrefabs | (empty) | Extra chest prefab names that get snap points |
 | Prefabs | ExcludedPrefabs | (empty) | Prefab names that never get snap points |

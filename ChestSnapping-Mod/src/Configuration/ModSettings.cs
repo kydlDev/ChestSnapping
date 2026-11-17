@@ -30,7 +30,7 @@ internal static class ModSettings
     // [DebugLog]
     public static ConfigEntry<bool> DebugLog;
 
-    /// <summary>Is the mod switched on ([General] Enable mod)? Off means inert: no snap points on any chest.</summary>
+    /// <summary>Is the mod switched on ([General] Enable Mod)? Off means inert: no snap points on any chest.</summary>
     public static bool On { get { return EnableMod == null || EnableMod.Value; } }
 
     /// <summary>Do chests get snap points? EnableMod and [Prefabs] Enable.</summary>
@@ -66,8 +66,8 @@ internal static class ModSettings
     /// <param name="config">The plugin's config file.</param>
     internal static void Bind(ConfigFile config)
     {
-        EnableMod = config.Bind("General", "Enable mod", Old(config, "General", "EnableAll"),
-            "Switches the whole mod on or off while playing. Off removes the snap points from every chest.");
+        EnableMod = config.Bind("General", "Enable Mod", Old(config, "General", "Enable mod", "General", "EnableAll"),
+            ConfigOrder.First("Switches the whole mod on or off while playing. Off removes the snap points from every chest."));
 
         PrefabsEnable = config.Bind("General", "Enable Prefabs", Old(config, "Prefabs", "Enable"),
             "Give chests snap points so they take part in Valheim's snap system (Q / E while placing). Off removes the snap points.");

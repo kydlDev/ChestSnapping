@@ -74,7 +74,7 @@ internal static class CommandUtil
     internal static void NoteIfInactive(string name)
     {
         if (!ModSettings.PrefabsOn)
-            Print("Note: snap points are switched off right now ([General] Enable mod / [Prefabs] Enable).");
+            Print("Note: snap points are switched off right now ([General] Enable Mod / [Prefabs] Enable).");
         else if (!ModSettings.OffsetsOn)
             Print("Note: adjustments are switched off right now ([Offsets] Enable); they are saved but not applied.");
 

@@ -17,10 +17,10 @@
     { "do": "hook", "name": "chestsnapping.featureRunning", "args": { "id": "snapping" }, "expect": true, "label": "General/Enable snapping unaffected by Stacking" },
     { "do": "setConfig", "values": { "General/Enable Stacking": true } },
     { "do": "wait", "until": { "check": "hook", "name": "chestsnapping.featureRunning", "args": { "id": "stacking" }, "expect": true }, "timeout": 5 },
-    { "do": "setConfig", "values": { "General/Enable mod": false } },
+    { "do": "setConfig", "values": { "General/Enable Mod": false } },
     { "do": "wait", "until": { "check": "hook", "name": "chestsnapping.featureRunning", "args": { "id": "stacking" }, "expect": false }, "timeout": 5 },
     { "do": "hook", "name": "chestsnapping.stackDecision", "args": { "ghost": "piece_chest_wood", "hit": "piece_chest_wood" }, "expect": "none", "label": "EnableAll off: vanilla" },
-    { "do": "setConfig", "values": { "General/Enable mod": true } },
+    { "do": "setConfig", "values": { "General/Enable Mod": true } },
     { "do": "wait", "until": { "check": "hook", "name": "chestsnapping.stackDecision", "args": { "ghost": "piece_chest_wood", "hit": "piece_chest_wood" }, "expect": "override" }, "timeout": 5 }
   ],
   "asserts": [
