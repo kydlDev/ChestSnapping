@@ -78,16 +78,6 @@ public static class ChestSnappingApi
         lock (Gate) { return Registered.Contains(prefabName); }
     }
 
-    internal static string[] Snapshot()
-    {
-        lock (Gate)
-        {
-            var list = new string[Registered.Count];
-            Registered.CopyTo(list);
-            return list;
-        }
-    }
-
     /// <summary>True once after the registrations changed; the plugin then refreshes the loaded chests on the main thread.</summary>
     internal static bool TakeRefreshRequest()
     {
